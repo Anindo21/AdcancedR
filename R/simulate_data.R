@@ -1,9 +1,6 @@
 # simulate_data.R
-# Generates fake OLS data so we can demonstrate the diagnostics. The two
-# switches let us deliberately break a classical assumption: either make the
-# error variance depend on X1 (heteroskedasticity) or make X2 nearly a copy
-# of X1 (multicollinearity). With both switches off the data satisfies the
-# usual assumptions and the tests should come back clean.
+# Small data generator for demo/testing.
+# You can optionally inject heteroskedasticity or multicollinearity.
 
 #' Simulate OLS Data with Optional Violations
 #'
@@ -17,8 +14,7 @@
 simulate_ols_data <- function(n = 500, heteroskedastic = FALSE,
                               multicollinear = FALSE, seed = NULL) {
   
-  # Fix the random numbers when a seed is supplied so the same inputs always
-  # give the same dataset (handy for demos and grading).
+  # Use a fixed seed when reproducibility is needed.
   if (!is.null(seed)) {
     set.seed(seed)
   }
@@ -26,24 +22,21 @@ simulate_ols_data <- function(n = 500, heteroskedastic = FALSE,
   # First predictor.
   X1 <- rnorm(n, mean = 5, sd = 2)
   
-  # Second predictor. When multicollinear is on, X2 is X1 with only a little
-  # noise added, so the two columns carry almost the same information.
+  # If requested, make X2 highly correlated with X1.
   if (multicollinear) {
     X2 <- X1 + rnorm(n, mean = 0, sd = 0.5)
   } else {
     X2 <- rnorm(n, mean = 10, sd = 3)
   }
   
-  # Errors. With heteroskedasticity the standard deviation grows with X1,
-  # which produces the fan shape in the residual plot. abs() keeps the sd
-  # positive.
+  # If requested, error spread grows with X1.
   if (heteroskedastic) {
     errors <- rnorm(n, mean = 0, sd = 1 + 1.5 * abs(X1))
   } else {
     errors <- rnorm(n, mean = 0, sd = 2)
   }
   
-  # True model: intercept 10, slope on X1 = 2.5, slope on X2 = -1.5.
+  # Data generating process.
   Y <- 10 + (2.5 * X1) - (1.5 * X2) + errors
   
   data.frame(Y = Y, X1 = X1, X2 = X2)

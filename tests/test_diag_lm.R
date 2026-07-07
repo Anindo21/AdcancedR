@@ -1,12 +1,10 @@
-# Quick checks for the diag_lm class. These are not a formal testing
-# framework, just a script that exercises the main paths (a normal model,
-# the single-predictor edge case, and the bad-input error) and stops with
-# an error via stopifnot() if anything is off.
+# Quick smoke checks for diag_lm.
+# Not a full test framework, just a script to catch obvious regressions.
 # Run from the project root with: source("tests/test_diag_lm.R")
 
 source("R/diag_lm_class.R")
 
-# Normal case: a model with several predictors.
+# Baseline model with multiple predictors.
 cat("== Test 1: Multi-predictor model ==\n")
 my_model <- lm(mpg ~ wt + hp + disp, data = mtcars)
 my_diag_obj <- new_diag_lm(my_model)

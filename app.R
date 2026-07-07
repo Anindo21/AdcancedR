@@ -1,75 +1,114 @@
 # app.R
-# Shiny front-end for the linear-model diagnostics. The statistics live in
-# the R/ scripts; this file only wires the UI controls to those functions
-# and shows the results. Data can either be simulated or read from a CSV the
-# user uploads.
+# Shiny front-end for the diagnostics workflow.
+# Core stats stay in R/; this file handles inputs and display.
 
 library(shiny)
+library(shinydashboard)
 library(gt)
 library(ggplot2)
 
-# Load the simulator and the diag_lm class.
+# Load helper scripts.
 source("R/diag_lm_class.R")
 source("R/simulate_data.R")
 
-# Allow CSV uploads up to 30 MB (the default is 5 MB).
+# Let users upload larger CSV files.
 options(shiny.maxRequestSize = 30 * 1024^2)
 
 # ---- User interface --------------------------------------------------------
-ui <- fluidPage(
-  
-  titlePanel("Topic 4: Interactive Linear Model Diagnostics"),
-  
-  sidebarLayout(
-    sidebarPanel(
-      h4("1. Data Source"),
-      radioButtons("data_source", NULL,
-                   choices = c("Simulate data"  = "simulate",
-                               "Upload a CSV"    = "upload"),
-                   selected = "simulate"),
-      
-      # Controls for the simulator. Only shown when "Simulate data" is picked.
-      conditionalPanel(
-        condition = "input.data_source == 'simulate'",
-        helpText("Simulate a dataset to test OLS assumptions."),
-        sliderInput("n_obs", "Sample Size (n):", min = 50, max = 1000, value = 500),
-        checkboxInput("het_viol", "Inject Heteroskedasticity", value = FALSE),
-        checkboxInput("coll_viol", "Inject Multicollinearity", value = FALSE),
-        numericInput("seed", "Random seed (leave blank for a new draw):", value = NULL),
-        # Nothing recomputes until this button is pressed (see eventReactive).
-        actionButton("sim_btn", "Simulate & Fit Model", class = "btn-primary", width = "100%")
+ui <- dashboardPage(
+  dashboardHeader(title = "Advanced Econometric Diagnostics Hub"),
+  dashboardSidebar(
+    sidebarMenu(
+      menuItem("1. Setup & Specifications", tabName = "setup", icon = icon("sliders")),
+      menuItem("2. Diagnostics", tabName = "diagnostics", icon = icon("chart-line"))
+    )
+  ),
+  dashboardBody(
+    tabItems(
+      tabItem(
+        tabName = "setup",
+        fluidRow(
+          box(
+            title = "Data Setup",
+            width = 12,
+            status = "primary",
+            solidHeader = TRUE,
+            radioButtons("data_source", NULL,
+                         choices = c("Simulate data" = "simulate",
+                                     "Upload a CSV" = "upload"),
+                         selected = "simulate"),
+            selectInput(
+              "data_structure",
+              "Select Econometric Data Structure:",
+              choices = c(
+                "Cross-Sectional" = "cs",
+                "Time Series" = "ts",
+                "Panel Data" = "panel"
+              ),
+              selected = "cs"
+            ),
+            
+            conditionalPanel(
+              condition = "input.data_structure == 'panel'",
+              textInput("p_idx_i", "Cross-Section Index:", value = ""),
+              textInput("p_idx_t", "Time Index:", value = "")
+            ),
+            
+            # Simulator controls (shown only for simulated data).
+            conditionalPanel(
+              condition = "input.data_source == 'simulate'",
+              helpText("Simulate a dataset to test OLS assumptions."),
+              sliderInput("n_obs", "Sample Size (n):", min = 50, max = 1000, value = 500),
+              checkboxInput("het_viol", "Inject Heteroskedasticity", value = FALSE),
+              checkboxInput("coll_viol", "Inject Multicollinearity", value = FALSE),
+              numericInput("seed", "Random seed (leave blank for a new draw):", value = NULL),
+              # Re-fit only after clicking this button.
+              actionButton("sim_btn", "Simulate & Fit Model", class = "btn-primary", width = "100%")
+            ),
+            
+            # Upload controls. Variable selectors appear after file read.
+            conditionalPanel(
+              condition = "input.data_source == 'upload'",
+              helpText("Upload a CSV, then choose the outcome and predictors."),
+              fileInput("csv_file", "CSV file:", accept = c(".csv", "text/csv")),
+              checkboxInput("header", "File has a header row", value = TRUE),
+              uiOutput("var_selectors")
+            ),
+            
+            hr(),
+            
+            selectInput("plot_type", "Select Diagnostic Plot:",
+                        choices = c("Residuals vs Fitted" = "residuals",
+                                    "Normal Q-Q" = "qq",
+                                    "Scale-Location" = "scale_location",
+                                    "Residual Histogram" = "histogram"))
+          )
+        )
       ),
-      
-      # Controls for an uploaded CSV. The column pickers are built on the fly
-      # once a file is read (see output$var_selectors in the server).
-      conditionalPanel(
-        condition = "input.data_source == 'upload'",
-        helpText("Upload a CSV, then choose the outcome and predictors."),
-        fileInput("csv_file", "CSV file:", accept = c(".csv", "text/csv")),
-        checkboxInput("header", "File has a header row", value = TRUE),
-        uiOutput("var_selectors")
-      ),
-      
-      hr(),
-      
-      h4("2. Plot Options"),
-      selectInput("plot_type", "Select Diagnostic Plot:", 
-                  choices = c("Residuals vs Fitted" = "residuals",
-                              "Normal Q-Q"          = "qq",
-                              "Scale-Location"      = "scale_location",
-                              "Residual Histogram"  = "histogram"))
-    ),
-    
-    mainPanel(
-      # One tab for the table, one for the plot.
-      tabsetPanel(
-        tabPanel("Model Summary & Tests", 
-                 br(),
-                 gt_output("summary_table")),
-        
-        tabPanel("Diagnostic Plots", 
-                 br(),
-                 plotOutput("diag_plot"))
+      tabItem(
+        tabName = "diagnostics",
+        fluidRow(
+          box(
+            title = "Model Summary & Tests",
+            width = 12,
+            status = "primary",
+            solidHeader = TRUE,
+            gt_output("summary_table"),
+            br(),
+            textOutput("time_series_note"),
+            br(),
+            htmlOutput("remediation_box")
+          )
+        ),
+        fluidRow(
+          box(
+            title = "Diagnostic Plots",
+            width = 12,
+            status = "primary",
+            solidHeader = TRUE,
+            plotOutput("diag_plot")
+          )
+        )
       )
     )
   )
@@ -78,11 +117,9 @@ ui <- fluidPage(
 # ---- Server ----------------------------------------------------------------
 server <- function(input, output, session) {
   
-  # --- Simulated data -------------------------------------------------------
-  # Only regenerate the data when the button is clicked, not on every slider
-  # move. ignoreNULL = FALSE makes it also run once when the app starts.
+  # Simulated data: only refresh on button click.
   sim_data <- eventReactive(input$sim_btn, {
-    # A blank seed box comes through as NULL/NA; use NULL for a fresh draw.
+    # Empty seed means draw a new random sample.
     seed_val <- if (is.null(input$seed) || is.na(input$seed)) NULL else input$seed
     simulate_ols_data(n = input$n_obs, 
                       heteroskedastic = input$het_viol, 
@@ -91,9 +128,7 @@ server <- function(input, output, session) {
   }, ignoreNULL = FALSE)
   
   
-  # --- Uploaded data --------------------------------------------------------
-  # Read the CSV once a file is chosen. read.csv is wrapped so a malformed
-  # file shows a friendly message instead of crashing the app.
+  # Uploaded data with a friendly read error.
   uploaded_data <- reactive({
     req(input$csv_file)
     tryCatch(
@@ -104,8 +139,7 @@ server <- function(input, output, session) {
     )
   })
   
-  # Build the outcome / predictor pickers from the uploaded columns. Only the
-  # numeric columns are offered, since the linear model needs numeric inputs.
+  # Build Y/X selectors from numeric columns.
   output$var_selectors <- renderUI({
     df <- uploaded_data()
     numeric_cols <- names(df)[vapply(df, is.numeric, logical(1))]
@@ -120,20 +154,21 @@ server <- function(input, output, session) {
   })
   
   
-  # --- Fit the model --------------------------------------------------------
-  # Picks the right data source, builds the model, and wraps it in a diag_lm
-  # object. validate()/req() keep the UI calm while inputs are still missing.
+  # Fit either lm or plm, then wrap in diag_lm.
   diag_model <- reactive({
+    req(input$data_structure)
     
+    # Build formula/data first, then choose lm vs plm.
     if (input$data_source == "simulate") {
       req(sim_data())
-      fit <- lm(Y ~ X1 + X2, data = sim_data())
+      df <- sim_data()
+      model_formula <- Y ~ X1 + X2
       
     } else {
       df <- uploaded_data()
       req(input$y_var, input$x_vars)
       
-      # The outcome cannot also be a predictor.
+      # Do not allow Y inside X.
       preds <- setdiff(input$x_vars, input$y_var)
       validate(need(length(preds) >= 1,
                     "Choose at least one predictor that is not the outcome."))
@@ -141,18 +176,50 @@ server <- function(input, output, session) {
       model_formula <- as.formula(
         paste(input$y_var, "~", paste(preds, collapse = " + "))
       )
+    }
+    
+    if (input$data_structure == "panel") {
+      validate(need(input$data_source == "upload",
+                    "Panel Data requires an uploaded CSV with explicit panel index columns."))
+      req(input$p_idx_i, input$p_idx_t)
+      validate(need(nzchar(input$p_idx_i) && nzchar(input$p_idx_t),
+                    "Provide both panel index column names."))
+      validate(need(input$p_idx_i %in% names(df),
+                    "Cross-Section Index column was not found in the uploaded data."))
+      validate(need(input$p_idx_t %in% names(df),
+                    "Time Index column was not found in the uploaded data."))
+      
+      fit <- plm::plm(
+        formula = model_formula,
+        data = df,
+        model = "pooling",
+        index = c(input$p_idx_i, input$p_idx_t)
+      )
+    } else {
       fit <- lm(model_formula, data = df)
     }
     
-    new_diag_lm(fit)
+    new_diag_lm(fit, data_type = input$data_structure)
   })
   
   
-  # --- Outputs --------------------------------------------------------------
-  # The summary() and plot() calls below are our own S3 methods, so the
-  # server stays short - all the work happens inside diag_lm_class.R.
+  # Outputs come from S3 summary/plot methods.
   output$summary_table <- render_gt({
     summary(diag_model())
+  })
+  
+  output$time_series_note <- renderText({
+    req(input$data_structure)
+    req(diag_model())
+    
+    if (input$data_structure == "ts") {
+      "Time Series Selected: Check serial-correlation diagnostics in the summary output."
+    }
+  })
+  
+  output$remediation_box <- renderUI({
+    req(diag_model())
+    HTML(remediation_advice(diag_model()))
   })
   
   output$diag_plot <- renderPlot({
