@@ -37,43 +37,7 @@ ui <- dashboardPage(
                          choices = c("Simulate data" = "simulate",
                                      "Upload a CSV" = "upload"),
                          selected = "simulate"),
-            selectInput(
-              "data_structure",
-              "Select Econometric Data Structure:",
-              choices = c(
-                "Cross-Sectional" = "cs",
-                "Time Series" = "ts",
-                "Panel Data" = "panel"
-              ),
-              selected = "cs"
-            ),
-            
-            conditionalPanel(
-              condition = "input.data_structure == 'panel'",
-              textInput("p_idx_i", "Cross-Section Index:", value = ""),
-              textInput("p_idx_t", "Time Index:", value = "")
-            ),
-            
-            # Simulator controls (shown only for simulated data).
-            conditionalPanel(
-              condition = "input.data_source == 'simulate'",
-              helpText("Simulate a dataset to test OLS assumptions."),
-              sliderInput("n_obs", "Sample Size (n):", min = 50, max = 1000, value = 500),
-              checkboxInput("het_viol", "Inject Heteroskedasticity", value = FALSE),
-              checkboxInput("coll_viol", "Inject Multicollinearity", value = FALSE),
-              numericInput("seed", "Random seed (leave blank for a new draw):", value = NULL),
-              # Re-fit only after clicking this button.
-              actionButton("sim_btn", "Simulate & Fit Model", class = "btn-primary", width = "100%")
-            ),
-            
-            # Upload controls. Variable selectors appear after file read.
-            conditionalPanel(
-              condition = "input.data_source == 'upload'",
-              helpText("Upload a CSV, then choose the outcome and predictors."),
-              fileInput("csv_file", "CSV file:", accept = c(".csv", "text/csv")),
-              checkboxInput("header", "File has a header row", value = TRUE),
-              uiOutput("var_selectors")
-            ),
+            uiOutput("data_config_controls"),
             
             hr(),
             
@@ -81,7 +45,8 @@ ui <- dashboardPage(
                         choices = c("Residuals vs Fitted" = "residuals",
                                     "Normal Q-Q" = "qq",
                                     "Scale-Location" = "scale_location",
-                                    "Residual Histogram" = "histogram"))
+                                    "Residual Histogram" = "histogram",
+                                    "Autocorrelation (ACF)" = "acf"))
           )
         )
       ),
@@ -95,9 +60,11 @@ ui <- dashboardPage(
             solidHeader = TRUE,
             gt_output("summary_table"),
             br(),
+            textOutput("simulator_used_note"),
+            br(),
             textOutput("time_series_note"),
             br(),
-            htmlOutput("remediation_box")
+            htmlOutput("remediation")
           )
         ),
         fluidRow(
@@ -116,15 +83,80 @@ ui <- dashboardPage(
 
 # ---- Server ----------------------------------------------------------------
 server <- function(input, output, session) {
+  output$data_config_controls <- renderUI({
+    req(input$data_source)
+    
+    if (identical(input$data_source, "simulate")) {
+      tagList(
+        selectInput(
+          "data_structure_sim",
+          "Select Econometric Data Structure:",
+          choices = c(
+            "Cross-Sectional" = "cs",
+            "Time Series" = "ts"
+          ),
+          selected = if (!is.null(input$data_structure_sim)) input$data_structure_sim else "cs"
+        ),
+        helpText("Simulate a dataset to test OLS assumptions."),
+        sliderInput("n_obs", "Sample Size (n):", min = 50, max = 1000, value = 500),
+        checkboxInput("het_viol", "Inject Heteroskedasticity", value = FALSE),
+        checkboxInput("coll_viol", "Inject Multicollinearity", value = FALSE),
+        numericInput("seed", "Random seed (leave blank for a new draw):", value = NULL),
+        actionButton("sim_btn", "Simulate & Fit Model", class = "btn-primary", width = "100%")
+      )
+    } else {
+      panel_selected <- identical(input$data_structure_upload, "panel")
+      tagList(
+        selectInput(
+          "data_structure_upload",
+          "Select Econometric Data Structure:",
+          choices = c(
+            "Cross-Sectional" = "cs",
+            "Time Series" = "ts",
+            "Panel Data" = "panel"
+          ),
+          selected = if (!is.null(input$data_structure_upload)) input$data_structure_upload else "cs"
+        ),
+        if (panel_selected) {
+          tagList(
+            textInput("p_idx_i", "Cross-Section Index:", value = ""),
+            textInput("p_idx_t", "Time Index:", value = "")
+          )
+        },
+        helpText("Upload a CSV, then choose the outcome and predictors."),
+        fileInput("csv_file", "CSV file:", accept = c(".csv", "text/csv")),
+        checkboxInput("header", "File has a header row", value = TRUE),
+        uiOutput("var_selectors")
+      )
+    }
+  })
+  
+  data_structure <- reactive({
+    req(input$data_source)
+    if (identical(input$data_source, "simulate")) {
+      req(input$data_structure_sim)
+      input$data_structure_sim
+    } else {
+      req(input$data_structure_upload)
+      input$data_structure_upload
+    }
+  })
   
   # Simulated data: only refresh on button click.
   sim_data <- eventReactive(input$sim_btn, {
     # Empty seed means draw a new random sample.
     seed_val <- if (is.null(input$seed) || is.na(input$seed)) NULL else input$seed
-    simulate_ols_data(n = input$n_obs, 
-                      heteroskedastic = input$het_viol, 
-                      multicollinear = input$coll_viol,
-                      seed = seed_val)
+    if (identical(data_structure(), "ts")) {
+      get("simulate_ts_data", mode = "function")(n = input$n_obs,
+                                                  heteroskedastic = input$het_viol,
+                                                  multicollinear = input$coll_viol,
+                                                  seed = seed_val)
+    } else {
+      get("simulate_ols_data", mode = "function")(n = input$n_obs,
+                                                   heteroskedastic = input$het_viol,
+                                                   multicollinear = input$coll_viol,
+                                                   seed = seed_val)
+    }
   }, ignoreNULL = FALSE)
   
   
@@ -156,7 +188,7 @@ server <- function(input, output, session) {
   
   # Fit either lm or plm, then wrap in diag_lm.
   diag_model <- reactive({
-    req(input$data_structure)
+    req(data_structure())
     
     # Build formula/data first, then choose lm vs plm.
     if (input$data_source == "simulate") {
@@ -178,7 +210,7 @@ server <- function(input, output, session) {
       )
     }
     
-    if (input$data_structure == "panel") {
+    if (data_structure() == "panel") {
       validate(need(input$data_source == "upload",
                     "Panel Data requires an uploaded CSV with explicit panel index columns."))
       req(input$p_idx_i, input$p_idx_t)
@@ -199,7 +231,7 @@ server <- function(input, output, session) {
       fit <- lm(model_formula, data = df)
     }
     
-    new_diag_lm(fit, data_type = input$data_structure)
+    get("new_diag_lm", mode = "function")(fit, data_type = data_structure())
   })
   
   
@@ -207,19 +239,32 @@ server <- function(input, output, session) {
   output$summary_table <- render_gt({
     summary(diag_model())
   })
+
+  output$simulator_used_note <- renderText({
+    req(diag_model())
+
+    if (identical(input$data_source, "simulate")) {
+      if (identical(data_structure(), "ts")) {
+        "Simulator used: Time-Series simulator (simulate_ts_data)."
+      } else {
+        "Simulator used: Cross-Section simulator (simulate_ols_data)."
+      }
+    } else {
+      "Data source used: Uploaded CSV file."
+    }
+  })
   
   output$time_series_note <- renderText({
-    req(input$data_structure)
+    req(data_structure())
     req(diag_model())
     
-    if (input$data_structure == "ts") {
+    if (data_structure() == "ts") {
       "Time Series Selected: Check serial-correlation diagnostics in the summary output."
     }
   })
   
-  output$remediation_box <- renderUI({
-    req(diag_model())
-    HTML(remediation_advice(diag_model()))
+  output$remediation <- renderUI({
+    HTML(get("remediation_advice", mode = "function")(diag_model()))
   })
   
   output$diag_plot <- renderPlot({

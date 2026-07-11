@@ -59,6 +59,13 @@ new_diag_lm <- function(model, data_type = "cross-section") {
     return(NA) 
   })
   
+  # Shapiro-Wilk can fail for constant residuals or very large samples.
+  shapiro_res <- tryCatch({
+    shapiro.test(residuals(model))
+  }, error = function(e) {
+    return(NA)
+  })
+  
   # Optional diagnostics by data structure.
   ts_diagnostics <- NULL
   panel_diagnostics <- NULL
@@ -151,6 +158,7 @@ new_diag_lm <- function(model, data_type = "cross-section") {
       dw_statistic = if (is.list(dw_result)) unname(dw_result$statistic) else NA,
       dw_pvalue    = if (is.list(dw_result)) unname(dw_result$p.value) else NA,
       vif_scores   = vif_result,
+      shapiro_pvalue = if (is.list(shapiro_res)) unname(shapiro_res$p.value) else NA,
       ts           = ts_diagnostics,
       panel        = panel_diagnostics
     )
@@ -227,6 +235,12 @@ summary.diag_lm <- function(object, ...) {
   data_type <- if (is.null(object$data_type)) "cross-section" else object$data_type
   bp_pval <- round(object$diagnostics$bp_pvalue, 4)
   dw_pval <- round(object$diagnostics$dw_pvalue, 4)
+  shapiro_pval <- if (is.null(object$diagnostics$shapiro_pvalue)) {
+    NA
+  } else {
+    object$diagnostics$shapiro_pvalue
+  }
+  shapiro_text <- if (is.na(shapiro_pval)) "N/A" else round(shapiro_pval, 4)
   
   # Cross-section layout.
   if (identical(data_type, "cross-section")) {
@@ -235,11 +249,12 @@ summary.diag_lm <- function(object, ...) {
         title = "OLS Regression & Diagnostics Summary",
         subtitle = paste(
           "Breusch-Pagan Test p-value:", bp_pval,
-          "| Durbin-Watson Test p-value:", dw_pval
+          "| Durbin-Watson Test p-value:", dw_pval,
+          "| Shapiro-Wilk Test p-value:", shapiro_text
         )
       ) |>
       fmt_number(
-        columns = -Term,
+        columns = 2:ncol(coef_df),
         decimals = 3
       ) |>
       tab_style(
@@ -275,7 +290,7 @@ summary.diag_lm <- function(object, ...) {
         subtitle = "Coefficient estimates with serial-correlation checks"
       ) |>
       fmt_number(
-        columns = -Term,
+        columns = 2:ncol(coef_df),
         decimals = 3
       ) |>
       tab_style(
@@ -294,6 +309,11 @@ summary.diag_lm <- function(object, ...) {
           "Ljung-Box: statistic = ", round(lb_stat, 4),
           ", p-value = ", round(lb_pval, 4),
           " (", lb_outcome, ")"
+        )
+      ) |>
+      tab_source_note(
+        source_note = paste0(
+          "Shapiro-Wilk normality p-value: ", shapiro_text
         )
       )
     
@@ -333,12 +353,17 @@ summary.diag_lm <- function(object, ...) {
         subtitle = "Hausman and Panel Breusch-Pagan diagnostic checks"
       ) |>
       fmt_number(
-        columns = c(Statistic, `p-value`),
+        columns = 2:3,
         decimals = 4
       ) |>
       tab_style(
         style = cell_text(weight = "bold"),
         locations = cells_column_labels()
+      ) |>
+      tab_source_note(
+        source_note = paste0(
+          "Shapiro-Wilk normality p-value: ", shapiro_text
+        )
       )
     
     return(summary_table)
@@ -350,11 +375,12 @@ summary.diag_lm <- function(object, ...) {
       title = "OLS Regression & Diagnostics Summary",
       subtitle = paste(
         "Breusch-Pagan Test p-value:", bp_pval,
-        "| Durbin-Watson Test p-value:", dw_pval
+        "| Durbin-Watson Test p-value:", dw_pval,
+        "| Shapiro-Wilk Test p-value:", shapiro_text
       )
     ) |>
     fmt_number(
-      columns = -Term,
+      columns = 2:ncol(coef_df),
       decimals = 3
     ) |>
     tab_style(
@@ -392,17 +418,17 @@ remediation_advice.diag_lm <- function(object, ...) {
   
   alerts <- character(0)
   
-  if (identical(object$data_type, "cross-section")) {
+  if (object$data_type %in% c("cross-section", "cs")) {
     bp_pvalue <- object$diagnostics$bp_pvalue
     if (!is.na(bp_pvalue) && bp_pvalue < 0.05) {
       alerts <- c(
         alerts,
-        "<div class='alert alert-warning'>Warning: Heteroskedasticity detected. Consider switching to robust standard errors.</div>"
+        "<div class='alert alert-warning'>Warning: Heteroskedasticity detected. Consider using robust standard errors.</div>"
       )
     }
   }
   
-  if (identical(object$data_type, "time-series")) {
+  if (object$data_type %in% c("time-series", "ts")) {
     bg_pvalue <- object$diagnostics$ts$bg_pvalue
     ljung_box_pvalue <- object$diagnostics$ts$ljung_box_pvalue
     
@@ -410,7 +436,7 @@ remediation_advice.diag_lm <- function(object, ...) {
         (!is.na(ljung_box_pvalue) && ljung_box_pvalue < 0.05)) {
       alerts <- c(
         alerts,
-        "<div class='alert alert-warning'>Warning: Residual autocorrelation detected. Check lagging structures.</div>"
+        "<div class='alert alert-warning'>Warning: Residual autocorrelation detected. Consider adjusting lagging variables.</div>"
       )
     }
   }
@@ -425,6 +451,20 @@ remediation_advice.diag_lm <- function(object, ...) {
     }
   }
   
+  shapiro_pval <- object$diagnostics$shapiro_pvalue
+  if (!is.null(shapiro_pval) && !is.na(shapiro_pval) && shapiro_pval < 0.05) {
+    alerts <- c(
+      alerts,
+      paste0(
+        "<div class='alert alert-warning'><b>Warning: Normality Assumption Violated!</b><br/>",
+        "The Shapiro-Wilk test rejects residual normality (p = ",
+        round(shapiro_pval, 4),
+        "). Coefficients can remain unbiased, but t/F tests may be unreliable in small samples. ",
+        "Check the Q-Q plot for heavy tails or outliers, and consider a log or other transformation.</div>"
+      )
+    )
+  }
+  
   return(alerts)
 }
 
@@ -437,6 +477,7 @@ remediation_advice.diag_lm <- function(object, ...) {
 #'   "qq"             - normal Q-Q plot (normality of residuals)
 #'   "scale_location" - scale-location plot (spread of residuals)
 #'   "histogram"      - histogram of the residuals (normality / skew)
+#'   "acf"            - residual ACF bars (serial correlation)
 #'
 #' @param x An object of class 'diag_lm'
 #' @param type String indicating which diagnostic plot to show
@@ -495,7 +536,7 @@ plot.diag_lm <- function(x, type = "residuals", ...) {
     # Scale-location view.
     plot_data$root_abs_resid <- sqrt(abs(plot_data$std_resid))
     
-    p <- ggplot(plot_data, aes(x = fitted, y = root_abs_resid)) +
+    p <- ggplot(plot_data, aes_string(x = "fitted", y = "root_abs_resid")) +
       geom_point(alpha = 0.6, color = "steelblue", size = 2) +
       geom_smooth(method = "loess", se = FALSE, color = "darkorange") +
       theme_minimal() +
@@ -522,6 +563,28 @@ plot.diag_lm <- function(x, type = "residuals", ...) {
         subtitle = "Checks for skew and departures from normality",
         x = "Residuals",
         y = "Density"
+      )
+    
+    return(p)
+    
+  } else if (type == "acf") {
+    
+    # Residual autocorrelation bars.
+    acf_obj <- acf(x$residuals, plot = FALSE, na.action = na.pass)
+    acf_df <- data.frame(
+      lag = as.numeric(acf_obj$lag),
+      acf = as.numeric(acf_obj$acf)
+    )
+    
+    p <- ggplot(acf_df, aes(x = lag, y = acf)) +
+      geom_col(fill = "steelblue", alpha = 0.85) +
+      geom_hline(yintercept = 0, linetype = "dashed", color = "darkred") +
+      theme_minimal() +
+      labs(
+        title = "Residual Autocorrelation (ACF)",
+        subtitle = "Visual check for serial correlation across lags",
+        x = "Lag",
+        y = "ACF"
       )
     
     return(p)

@@ -178,6 +178,36 @@ Run the checks for the `diag_lm` class:
 source("tests/test_diag_lm.R")
 ```
 
+## Data Sources
+
+- `data/sample_cars.csv` was created as a project demo file for testing the
+  CSV upload workflow.
+- `data/srental.csv`, `data/wage.csv`, and `data/titanic.csv` are course/local
+  datasets included in this repository for reproducible examples.
+- If your module requires formal dataset citations, replace this section with
+  the exact bibliographic source used in your class materials.
+
+## Method and Package References
+
+The statistical procedures and outputs in this app are implemented using:
+
+- `lmtest` (`bptest`, `dwtest`, `bgtest`)
+- `car` (`vif`)
+- `plm` (`plm`, `plmtest`, `phtest`, `pbgtest`)
+- `gt` (table formatting)
+- `ggplot2` (diagnostic visualisation)
+- `shiny` and `shinydashboard` (interactive interface)
+
+References should be cited according to your course style guide (for example,
+CRAN package citation output via `citation("packageName")`).
+
+## AI Assistance Disclosure
+
+This project was developed by the author with interactive coding assistance
+tools used for debugging, refactoring, and implementation support. Final model
+design choices, interpretation logic, and submission responsibility remain with
+the author.
+
 ## Notes
 
 - Files placed in `R/` are automatically sourced by Shiny at startup, which is
