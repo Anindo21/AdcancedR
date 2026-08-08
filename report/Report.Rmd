@@ -1,5 +1,5 @@
 ---
-title: "Interactive Diagnostics for Linear and Logistic Regression Models: Design, Implementation, and Validation of the `diag_lm` Framework"
+title: "Interactive Diagnostics for Linear and Logistic Regression Models: Design, Implementation and Validation of the `diag_lm` Framework"
 subtitle: "A Comprehensive Academic Report and Software Documentation (including Vignette-Style Usage Guide)"
 type: "Project Report"
 author: "Rezaul Hoque, Sarah Al-Talal, Thi Hong Cam Nguyen "
@@ -79,13 +79,13 @@ source("../R/simulate_data.R")
 ## Motivation
 
 The Classical Linear Regression Model (CLRM) estimated by Ordinary Least
-Squares relies on a small set of Gauss--Markov assumptions -- linearity,
-strict exogeneity, homoskedasticity, no serial correlation, and no perfect
-multicollinearity -- for its estimator to be the Best Linear Unbiased Estimator
+Squares relies on a small set of Gauss--Markov assumptions (linearity,
+strict exogeneity, homoskedasticity, no serial correlation and no perfect
+multicollinearity) for its estimator to be the Best Linear Unbiased Estimator
 (BLUE), and on normality of the errors for small-sample inference (t- and
 F-tests) to be exact [@gujarati2009; @wooldridge2020]. In applied work,
 violations of these assumptions are common and, if undetected, can lead to
-inefficient estimates, biased standard errors, and misleading hypothesis
+inefficient estimates, biased standard errors and misleading hypothesis
 tests. Manually checking each assumption for every model specification is
 repetitive and error-prone, which motivates encapsulating the checks inside a
 reusable software abstraction.
@@ -99,20 +99,20 @@ This project has four objectives:
    following the classic R idiom of `print`/`summary`/`plot` methods.
 2. **Extend the diagnostic framework beyond the linear model** to binomial
    logistic regression, since a binary outcome violates the assumptions that
-   Breusch--Pagan, Durbin--Watson, and Shapiro--Wilk are built on and
+   Breusch--Pagan, Durbin--Watson and Shapiro--Wilk are built on and
    therefore requires a different diagnostic toolkit (goodness-of-fit,
-   discrimination, and calibration checks) rather than a reuse of the linear
+   discrimination and calibration checks) rather than a reuse of the linear
    ones.
 3. **Provide an interactive front end** (`app.R`, a `shiny` dashboard)
    so that a non-technical user can choose a model family, simulate data with
-   known assumption violations, or upload their own data, and immediately see
+   known assumption violations or upload their own data, and immediately see
    whether an assumption is violated, through a diagnostic display that is
    curated to the model family and data structure actually selected (e.g.
    time-series users are shown serial-correlation-relevant plots rather than
    the fitted-value-based plots designed for cross-sectional heteroskedasticity).
 4. **Validate the implementation** through (a) a controlled simulation study
    where the ground truth is known by construction for both model families,
-   (b) applied case studies on real survey data, and (c) an automated
+   (b) applied case studies on real survey data and (c) an automated
    regression test suite.
 
 ## Report Roadmap
@@ -140,6 +140,7 @@ Project/
 +-- R/
 |   +-- diag_lm_class.R       # diag_lm S3 class: constructor + print/summary/plot methods
 |   +-- simulate_data.R       # simulate_ols_data() / simulate_ts_data() / simulate_logit_data()
+|   +-- llm_interpret.R       # optional, opt-in AI-assisted interpretation via Groq (Section 6.1)
 +-- data/
 |   +-- sample_cars.csv, wage.csv, srental.csv, titanic.csv
 +-- tests/
@@ -159,24 +160,24 @@ this report and, in full tutorial form, in Appendix B.
 
 `diag_lm` is a lightweight container class built with R's S3 object system.
 The constructor, `new_diag_lm(model, data_type)`, accepts a fitted `lm`,
-`plm`, or binomial `glm` object and:
+`plm` or binomial `glm` object and:
 
-1. validates the input against the requested `data_type` -- `"logistic"`
+1. validates the input against the requested `data_type`: `"logistic"`
    (alias `"binary"`) requires a `glm(family = binomial(...))` object, while
-   `"cross-section"`, `"time-series"`, and `"panel"` require an `lm`/`plm`
-   object -- stopping early with an informative error otherwise;
-2. stores the model formula, coefficient table, residuals, and fitted
+   `"cross-section"`, `"time-series"` and `"panel"` require an `lm`/`plm`
+   object, stopping early with an informative error otherwise;
+2. stores the model formula, coefficient table, residuals and fitted
    values;
 3. for linear models, computes, wrapped in `tryCatch()` so that failures
    degrade to `NA` rather than crashing the app: the Breusch--Pagan
    statistic (`lmtest::bptest`), the Durbin--Watson statistic
-   (`lmtest::dwtest`), the Shapiro--Wilk statistic (`shapiro.test`), and the
+   (`lmtest::dwtest`), the Shapiro--Wilk statistic (`shapiro.test`) and the
    Variance Inflation Factors (`car::vif`, which is undefined for
    single-predictor models);
 4. for logistic models, computes instead the Hosmer--Lemeshow
    goodness-of-fit test, McFadden/Cox--Snell/Nagelkerke pseudo-$R^2$
-   measures, the AUC, confusion-matrix accuracy/sensitivity/specificity, and
-   a (quasi-)complete-separation flag -- all implemented in base R (no
+   measures, the AUC, confusion-matrix accuracy/sensitivity/specificity and
+   a (quasi-)complete-separation flag, all implemented in base R (no
    additional package dependency) so that the framework remains lightweight;
 5. for time-series (`data_type = "time-series"`) or panel
    (`data_type = "panel"`) linear models, additionally computes the
@@ -242,13 +243,13 @@ validate that the diagnostic tests behave as theory predicts (Section 4).
 ## The Shiny Application
 
 `app.R` is the sole application in the project. Its server function
-keeps almost no statistical logic of its own: it maps UI inputs -- including
+keeps almost no statistical logic of its own: it maps UI inputs, including
 a **Model Family** selector
-(Linear/OLS vs. Logistic/Binomial) -- to `simulate_ols_data()` /
+(Linear/OLS vs. Logistic/Binomial), to `simulate_ols_data()` /
 `simulate_ts_data()` / `simulate_logit_data()`, a bundled "available" wage
-dataset, or an uploaded CSV; builds a model formula from the selected
+dataset or an uploaded CSV; builds a model formula from the selected
 outcome/predictor columns (optionally with interaction terms); fits `lm()`,
-`plm()`, or `glm(family = binomial())` depending on the selected family and
+`plm()` or `glm(family = binomial())` depending on the selected family and
 data structure; wraps the result in `new_diag_lm()`; and renders the
 `summary()` / `plot()` outputs. Three design choices deserve emphasis:
 
@@ -256,7 +257,7 @@ data structure; wraps the result in `new_diag_lm()`; and renders the
   boxes and the diagnostic-plot grid are both generated by `renderUI()`
   functions that inspect the selected model family and data structure and
   render only the diagnostics that are statistically meaningful for that
-  combination -- e.g. Hosmer--Lemeshow/AUC/Accuracy value boxes and
+  combination, e.g. Hosmer--Lemeshow/AUC/Accuracy value boxes and
   binned-residual/ROC/calibration plots for logistic models, or
   residuals-over-time/ACF/PACF plots (instead of the fitted-value-based
   Residuals-vs-Fitted and Scale-Location plots) for time series, since those
@@ -284,10 +285,10 @@ $$\hat\varepsilon_i^2 = \gamma_0 + \gamma_1 X_{1i} + \dots + \gamma_k X_{ki} + v
 The test statistic is $BP = n R^2_{\text{aux}}$, which is asymptotically
 $\chi^2_k$ under the null of homoskedasticity. A small p-value
 ($< 0.05$) is evidence of heteroskedasticity, which does not bias
-$\hat\beta$ but invalidates the usual OLS standard errors -- the standard
+$\hat\beta$ but invalidates the usual OLS standard errors, the standard
 remedy is heteroskedasticity-robust (White) standard errors.
 
-## Serial Correlation: Durbin--Watson, Breusch--Godfrey, and Ljung--Box
+## Serial Correlation: Durbin--Watson, Breusch--Godfrey and Ljung--Box
 
 For cross-sectional data, `diag_lm` reports the Durbin--Watson statistic
 [@durbinwatson1950; @durbinwatson1951],
@@ -308,8 +309,8 @@ value. `diag_lm` therefore also offers a Residuals-over-Time plot (residuals
 against their time index, the direct visual analogue of the Breusch--Godfrey
 and Ljung--Box tests) and a Partial Autocorrelation (PACF) plot alongside the
 standard ACF plot, so that the order of any remaining autocorrelation can be
-read off directly. `app.R` (Section 6) surfaces exactly this curated set
--- Residuals-over-Time, ACF, PACF, Normal Q-Q, and Residual Histogram -- when
+read off directly. `app.R` (Section 6) surfaces exactly this curated set:
+Residuals-over-Time, ACF, PACF, Normal Q-Q and Residual Histogram, when
 the user selects time-series data, rather than reusing the cross-sectional
 plot menu.
 
@@ -336,9 +337,9 @@ error.
 ## Logistic Regression Diagnostics
 
 A binary outcome violates the assumptions that Breusch--Pagan,
-Durbin--Watson, and Shapiro--Wilk are built on: the response is not
+Durbin--Watson and Shapiro--Wilk are built on: the response is not
 continuous, its conditional variance is $p_i(1-p_i)$ by construction rather
-than a constant $\sigma^2$, and its residuals are never normally distributed.
+than a constant $\sigma^2$ and its residuals are never normally distributed.
 When `data_type = "logistic"`, `diag_lm` therefore substitutes a different
 toolkit, all implemented in base R without additional package dependencies.
 
@@ -348,7 +349,7 @@ $g=10$) bins of increasing predicted probability and compares observed
 versus expected successes and failures within each bin:
 $$HL = \sum_{k=1}^{g} \left[ \frac{(O_{1k}-E_{1k})^2}{E_{1k}} + \frac{(O_{0k}-E_{0k})^2}{E_{0k}} \right],$$
 which is asymptotically $\chi^2_{g-2}$ under the null hypothesis that the
-fitted model is correctly specified. A small p-value indicates poor fit --
+fitted model is correctly specified. A small p-value indicates poor fit,
 typically a sign of omitted non-linearity or missing predictors.
 
 **Pseudo-$R^2$ measures.** Because logistic regression is fit by maximum
@@ -441,7 +442,7 @@ print(plot(diag_base, type = "qq"))
 ```
 
 All four p-values sit comfortably above 0.05 and the maximum VIF stays close
-to 1, so none of the checks raises a flag here -- exactly what one would
+to 1, so none of the checks raises a flag here, exactly what one would
 expect when no violation has been injected into the data-generating process.
 
 ## Injected Heteroskedasticity
@@ -459,7 +460,7 @@ print(plot(diag_het, type = "residuals"))
 ```
 
 Once `heteroskedastic = TRUE` is switched on, the Breusch--Pagan p-value
-falls sharply -- typically well below 0.05 -- and the residual plot develops
+falls sharply, typically well below 0.05, and the residual plot develops
 the expected funnel shape. Numerical test and visual diagnostic point to the
 same conclusion.
 
@@ -477,7 +478,7 @@ cat(sprintf("Correlation(X1, X2) = %.3f\n", cor(df_col$X1, df_col$X2)))
 
 Because `multicollinear = TRUE` constructs $X_2$ as $X_1$ plus a small noise
 term, the correlation between the two predictors approaches 1, and both
-VIFs climb well past the conventional threshold of 5 -- harmful collinearity
+VIFs climb well past the conventional threshold of 5, harmful collinearity
 is flagged correctly.
 
 ## Comparison Across Scenarios
@@ -495,7 +496,7 @@ kable(comparison_tbl, caption = "Diagnostic summary across the three simulated s
 
 The comparison table makes the selectivity explicit: each violation moves
 only the diagnostic built to detect it, leaving the other columns close to
-their baseline values. That is the property worth demonstrating -- a
+their baseline values. That is the property worth demonstrating: a
 diagnostic suite should be specific, not merely sensitive.
 
 ## Time-Series Data: Serial Correlation
@@ -548,7 +549,7 @@ lbase_tbl <- data.frame(
 kable(lbase_tbl, caption = "Logistic baseline model: diagnostics (no violation injected)")
 ```
 
-```{r sim-logit-baseline-plots, fig.show='hold', out.width='32%', fig.height=3, fig.cap="Logistic baseline model: Binned Residual plot (left), ROC curve (centre), and Calibration plot (right). Residuals scattered around zero within the approximate band, a ROC curve well above the diagonal, and points tracking the identity line are all consistent with a correctly specified, well-discriminating, well-calibrated model."}
+```{r sim-logit-baseline-plots, fig.show='hold', out.width='32%', fig.height=3, fig.cap="Logistic baseline model: Binned Residual plot (left), ROC curve (centre) and Calibration plot (right). Residuals scattered around zero within the approximate band, a ROC curve well above the diagonal and points tracking the identity line are all consistent with a correctly specified, well-discriminating, well-calibrated model."}
 print(plot(diag_lbase, type = "binned_residuals"))
 print(plot(diag_lbase, type = "roc"))
 print(plot(diag_lbase, type = "calibration"))
@@ -557,7 +558,7 @@ print(plot(diag_lbase, type = "calibration"))
 None of the three diagnostics raises a concern here: the Hosmer--Lemeshow
 test does not reject adequate fit, the AUC indicates good discrimination,
 and both the binned-residual and calibration plots stay close to their
-reference lines -- consistent with a correctly specified model.
+reference lines, consistent with a correctly specified model.
 
 ## Injected Omitted Non-Linearity (Mis-Specification)
 
@@ -570,7 +571,7 @@ cat(sprintf("Hosmer-Lemeshow p-value: %.6f\n", diag_lnl$diagnostics$logistic$hl_
 cat(sprintf("McFadden pseudo-R2:      %.4f\n", diag_lnl$diagnostics$logistic$mcfadden_r2))
 ```
 
-```{r sim-logit-nonlinear-plot, fig.cap="Binned residual plot under an omitted quadratic term in X1: the systematic curvature away from zero, rather than a random scatter within the band, is the graphical counterpart of what the Hosmer-Lemeshow test flags numerically -- a mis-specified functional form."}
+```{r sim-logit-nonlinear-plot, fig.cap="Binned residual plot under an omitted quadratic term in X1: the systematic curvature away from zero, rather than a random scatter within the band, is the graphical counterpart of what the Hosmer-Lemeshow test flags numerically, a mis-specified functional form."}
 print(plot(diag_lnl, type = "binned_residuals"))
 ```
 
@@ -622,8 +623,8 @@ kable(logit_comparison_tbl, caption = "Diagnostic summary across the three simul
 ```
 
 As with the linear model, each injected violation is picked up by the
-diagnostic designed to target it -- Hosmer--Lemeshow for mis-specification,
-VIF for multicollinearity -- while AUC stays comparatively stable across
+diagnostic designed to target it (Hosmer--Lemeshow for mis-specification,
+VIF for multicollinearity), while AUC stays comparatively stable across
 specifications, a reminder that discrimination is a logically distinct
 property from specification or collinearity.
 
@@ -643,7 +644,7 @@ cat(sprintf("Observations: %d | Variables: %d\n", nrow(wage), ncol(wage)))
 str(wage[, c("wage", "experience", "age", "female", "univ")])
 ```
 
-We regress log hourly wage on experience, age, and an indicator for female,
+We regress log hourly wage on experience, age and an indicator for female,
 a simple Mincer-style specification.
 
 ```{r wage-model}
@@ -690,7 +691,7 @@ still warrant attention even after a standard transformation.
 
 To exercise the logistic pathway on the same real dataset, we fit
 `female` (a 0/1 indicator already present in `data/wage.csv`) on age and
-experience -- a purely illustrative specification chosen only to demonstrate
+experience, a purely illustrative specification chosen only to demonstrate
 the diagnostic workflow on non-simulated data, not a substantive labour-
 economics claim.
 
@@ -730,8 +731,8 @@ if (length(advice_logit) == 0) {
 
 As expected for a weak, purely illustrative specification with only two
 predictors, discrimination is modest; the case study nonetheless confirms
-that the full logistic pipeline -- fitting, all five diagnostics, three
-plot types, and rule-based remediation -- runs end-to-end on real,
+that the full logistic pipeline (fitting, all five diagnostics, three
+plot types and rule-based remediation) runs end-to-end on real,
 non-simulated survey data exactly as it does in the controlled simulations
 of Section 4.
 
@@ -742,20 +743,20 @@ of Section 4.
 `app.R` is the primary application (Section 2.4) and presents the
 workflow above through three tabs. **Setup** lets the user choose a **Model
 Family** (Linear/OLS or Logistic/Binomial), a data source (simulate, a
-bundled wage dataset, or an uploaded CSV), and, for linear models, the
-econometric structure (cross-section, time series, or panel); it also hosts
+bundled wage dataset or an uploaded CSV), and, for linear models, the
+econometric structure (cross-section, time series or panel); it also hosts
 an in-app variable-type editor. **Diagnostics** reports the fitted model,
-colour-coded PASS/CHECK/CAUTION status indicators, and a set of diagnostic
-plots -- both the value boxes and the plot grid are generated dynamically
-(`renderUI()`) so that only diagnostics relevant to the selected model family
+colour-coded PASS/CHECK/CAUTION status indicators and a set of diagnostic
+plots (both the value boxes and the plot grid are generated dynamically via
+`renderUI()`) so that only diagnostics relevant to the selected model family
 and data structure are shown (Section 2.4). **Transformation** supports
 interaction-term construction and log/exp/square/standardise/log-return
 column transforms. The screenshots below (captured live from a
 `shiny::runApp()` session during the preparation of this report) show the
-running application across the linear cross-sectional, logistic, and
+running application across the linear cross-sectional, logistic and
 time-series pathways.
 
-![Setup tab (Linear model family): choosing a data source, econometric structure, and sample size for the simulator.](figures/app_setup_tab.png)
+![Setup tab (Linear model family): choosing a data source, econometric structure and sample size for the simulator.](figures/app_setup_tab.png)
 
 ![Setup tab switched to the Logistic model family: the violation controls change to Inject Multicollinearity / Omitted Non-linearity / Class Imbalance, matching simulate_logit_data().](figures/app_setup_logistic.png)
 
@@ -767,13 +768,36 @@ time-series pathways.
 
 ![Diagnostics tab (Logistic): the Odds Ratio column and the Hosmer-Lemeshow / McFadden R2 / AUC / Accuracy subtitle in the summary table.](figures/app_diagnostics_valueboxes_logistic.png)
 
-![Diagnostics tab (Logistic): Binned Residuals, ROC Curve, Calibration Plot, and Normal Q-Q -- the plot menu curated for a binomial model.](figures/app_diagnostics_plots_logistic.png)
+![Diagnostics tab (Logistic): Binned Residuals, ROC Curve, Calibration Plot and Normal Q-Q, the plot menu curated for a binomial model.](figures/app_diagnostics_plots_logistic.png)
 
-![Diagnostics tab (Linear, time series): a deliberately "failing" run -- the value boxes correctly flag serial correlation (DW = 0.84) and non-normality, while the curated Residuals-over-Time and ACF plots show the persistent pattern responsible.](figures/app_diagnostics_valueboxes_ts.png)
+![Diagnostics tab (Linear, time series): a deliberately "failing" run: the value boxes correctly flag serial correlation (DW = 0.84) and non-normality, while the curated Residuals-over-Time and ACF plots show the persistent pattern responsible.](figures/app_diagnostics_valueboxes_ts.png)
 
 ![Diagnostics tab (Linear, time series): Residuals-over-Time (left) and ACF (right), replacing the fitted-value-based plots that are not designed to reveal serial correlation.](figures/app_diagnostics_plots_ts.png)
 
 ![Transformation tab: applying a log/exp/square/standardise/log-return transform to a chosen column.](figures/app_transformation_tab.png)
+
+## AI-Assisted Interpretation (Optional, Opt-In)
+
+The Diagnostics tab also offers an optional "AI Interpretation" panel,
+implemented in `R/llm_interpret.R` and wired into `app.R` as a purely
+additive feature that leaves every existing output untouched. Clicking
+**Generate AI Interpretation** sends a compact, privacy-safe summary of the
+*already-computed* diagnostic statistics (model type, coefficients and the
+relevant test statistics/p-values, never raw data rows) to a third-party
+large language model (Groq's `openai/gpt-oss-120b`, via its OpenAI-compatible
+chat-completions API) and renders the model's plain-language narrative
+alongside the deterministic, rule-based `remediation_advice()` output
+(Section 2.2). The call is strictly opt-in: nothing is sent until the button
+is clicked, and if no API key is configured the panel falls back to an
+explanatory message instead of failing, so the deterministic parts of the
+app and its reproducibility are unaffected whether or not this feature
+is used. Because the response originates from an external service, it is
+escaped and parsed through a Markdown-to-HTML pipeline (`commonmark`) before
+display, so any stray HTML in the returned text is neutralised rather than
+executed. This feature is disclosed here for transparency, consistent with
+the use of an external AI service being permitted for this assignment.
+
+![Diagnostics tab: the AI Interpretation panel after clicking Generate AI Interpretation, showing a structured Summary, per-test Diagnostic Findings and Recommended Actions generated from the already-computed diagnostics.](figures/app_ai_interpretation.png)
 
 # Testing and Validation
 
@@ -798,7 +822,7 @@ supported `type`, and raises an informative error for an unsupported type;
 is mathematically undefined); (v) that the constructor rejects
 non-`lm`/`plm` input with an explicit error; (vi) for the logistic
 extension, that a binomial `glm` produces valid Hosmer--Lemeshow/AUC/McFadden
-$R^2$ diagnostics, a `gt_tbl` summary, and working `binned_residuals`/`roc`/
+$R^2$ diagnostics, a `gt_tbl` summary and working `binned_residuals`/`roc`/
 `calibration` plots; (vii) that those three logistic-only plot types raise an
 informative error when requested on a non-logistic model; and (viii) that
 the time-series-only `residuals_time`/`pacf` plot types render correctly.
@@ -816,7 +840,7 @@ defects, all of which were fixed in the current source (`app.R`, included in
 the project repository):
 
 1. **Model-family race condition.** The logistic-only outputs (`hl_box`,
-   `auc_box`, `accuracy_box`, `overall_box_logistic`, and the
+   `auc_box`, `accuracy_box`, `overall_box_logistic` and the
    `binned_residuals`/`roc`/`calibration` plots) read
    `diag_model()$diagnostics$logistic` without first confirming
    `diag_model()$data_type == "binary"`. Rapidly switching **Model Family**
@@ -877,13 +901,13 @@ Together with the simulation study (Section 4) and the applied case studies
 (does the code do what it claims to do?), integration-level (does the actual
 app reactive graph behave correctly, including under adversarial and
 edge-case input?), statistical (does it recover known ground truth, for both
-model families?), and applied (does it behave sensibly on real, messy
+model families?) and applied (does it behave sensibly on real, messy
 data?).
 
-# Discussion, Limitations, and Future Work
+# Discussion, Limitations and Future Work
 
 **Reliance on asymptotic tests.** Breusch--Pagan, Durbin--Watson (as a
-p-value via `lmtest::dwtest`), the Breusch--Godfrey/Ljung--Box tests, and the
+p-value via `lmtest::dwtest`), the Breusch--Godfrey/Ljung--Box tests and the
 Hosmer--Lemeshow test all rely on large-sample approximations; in very small
 samples their nominal size may not hold exactly.
 
@@ -907,8 +931,8 @@ Firth's correction [@firth1993] rather than only recommending it.
 
 **No formal package structure.** As noted throughout, the project is
 distributed as plain scripts. Converting `R/` into an installable package
-(with a `DESCRIPTION`, `NAMESPACE`, and `roxygen2`-generated documentation)
-would enable `R CMD check`, a real `vignette()`, and easier reuse outside this
+(with a `DESCRIPTION`, `NAMESPACE` and `roxygen2`-generated documentation)
+would enable `R CMD check`, a real `vignette()` and easier reuse outside this
 specific `shiny` app; this is the most actionable piece of future work.
 
 **Remediation is advisory only.** `remediation_advice()` currently only
@@ -924,14 +948,14 @@ This report has documented a complete, reproducible pipeline for diagnosing
 violations of both the classical linear regression assumptions and the
 analogous fit/discrimination properties of a binomial logistic regression: a
 well-tested S3 class encapsulating diagnostic tests for four data structures
-(cross-section, time-series, panel, and logistic), an interactive `shiny`
+(cross-section, time-series, panel and logistic), an interactive `shiny`
 application (`app.R`) that makes those diagnostics accessible without
 writing R code and that curates its value boxes and plots to the selected
-model family and data structure, and a four-tier validation strategy
+model family and data structure and a four-tier validation strategy
 spanning unit tests, Shiny-level integration tests, a controlled simulation
-study, and real-world case studies. The simulation study confirmed that each implemented test responds
-correctly and selectively to the assumption violation it targets -- for both
-model families -- and the wage-data case studies showed the framework
+study and real-world case studies. The simulation study confirmed that each implemented test responds
+correctly and selectively to the assumption violation it targets, for both
+model families, and the wage-data case studies showed the framework
 behaving sensibly on real, non-simulated data. Because the project is not
 packaged formally, Appendix B supplies a vignette-style guide to the
 `diag_lm` class so that the documentation requirement is satisfied in full
@@ -1103,7 +1127,7 @@ specification over the naive pooled model.
 
 `diag_lm` also supports binomial `glm` models via `data_type = "logistic"`
 (alias `"binary"`). The example below simulates a binary outcome, fits a
-logistic regression, and inspects the logistic-specific diagnostics and
+logistic regression and inspects the logistic-specific diagnostics and
 plot types:
 
 ```{r vignette-logistic}

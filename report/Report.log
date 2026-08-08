@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.8.8)  8 AUG 2026 21:57
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.8.8)  8 AUG 2026 23:01
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -948,7 +948,7 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 218.
 (c:/Users/A01411/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-<Resources/duelogo_en.png, id=192, 230.8625pt x 89.33376pt>
+<Resources/duelogo_en.png, id=196, 230.8625pt x 89.33376pt>
 File: Resources/duelogo_en.png Graphic file (type png)
 <use Resources/duelogo_en.png>
 Package pdftex.def Info: Resources/duelogo_en.png  used on input line 222.
@@ -1014,12 +1014,12 @@ l.16 ...ted for a binomial model.}}{25}{figure.15}
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.32 ... {7}Testing and Validation}{26}{section.7}
+l.32 ...on (Optional, Opt-In)}{26}{subsection.6.1}
                                                   % [1
 
 ]
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 39.
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 40.
 )
 \tf@toc=\write7
 \openout7 = `Report.toc'.
@@ -1039,6 +1039,11 @@ Overfull \hbox (76.36829pt too wide) in paragraph at lines 412--412
 
 Overfull \hbox (110.86069pt too wide) in paragraph at lines 412--412
 []\T1/lmtt/m/n/10.95 |   +-- simulate_data.R       # simulate_ols_data() / simulate_ts_data() / simulate_logit_data()[] 
+ []
+
+
+Overfull \hbox (122.35815pt too wide) in paragraph at lines 412--412
+[]\T1/lmtt/m/n/10.95 |   +-- llm_interpret.R       # optional, opt-in AI-assisted interpretation via Groq (Section 6.1)[] 
  []
 
 
@@ -1069,6 +1074,11 @@ Underfull \hbox (badness 10000) in paragraph at lines 441--448
  []
 
 [4]
+Underfull \hbox (badness 1231) in paragraph at lines 448--455
+\T1/lmr/m/n/10.95 ac-cu-racy/sensitivity/specificity and a (quasi-)complete-separation flag, all im-ple-
+ []
+
+
 Overfull \hbox (7.54762pt too wide) in paragraph at lines 470--481
  [][] 
  []
@@ -1095,12 +1105,12 @@ Package xcolor Warning: Incompatible color definition on input line 768.
 
 Package xcolor Warning: Incompatible color definition on input line 768.
 
-<Report_files/figure-latex/sim-baseline-plots-1.pdf, id=437, 361.35pt x 259.97125pt>
+<Report_files/figure-latex/sim-baseline-plots-1.pdf, id=446, 361.35pt x 259.97125pt>
 File: Report_files/figure-latex/sim-baseline-plots-1.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/sim-baseline-plots-1.pdf>
 Package pdftex.def Info: Report_files/figure-latex/sim-baseline-plots-1.pdf  used on input line 772.
 (pdftex.def)             Requested size: 216.1004pt x 155.47223pt.
-<Report_files/figure-latex/sim-baseline-plots-2.pdf, id=438, 361.35pt x 259.97125pt>
+<Report_files/figure-latex/sim-baseline-plots-2.pdf, id=447, 361.35pt x 259.97125pt>
 File: Report_files/figure-latex/sim-baseline-plots-2.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/sim-baseline-plots-2.pdf>
 Package pdftex.def Info: Report_files/figure-latex/sim-baseline-plots-2.pdf  used on input line 772.
@@ -1124,7 +1134,7 @@ Package xcolor Warning: Incompatible color definition on input line 805.
 
 Package xcolor Warning: Incompatible color definition on input line 805.
 
-<Report_files/figure-latex/sim-het-plot-1.pdf, id=446, 361.35pt x 259.97125pt>
+<Report_files/figure-latex/sim-het-plot-1.pdf, id=455, 361.35pt x 259.97125pt>
 File: Report_files/figure-latex/sim-het-plot-1.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/sim-het-plot-1.pdf>
 Package pdftex.def Info: Report_files/figure-latex/sim-het-plot-1.pdf  used on input line 809.
@@ -1150,607 +1160,612 @@ Package xcolor Warning: Incompatible color definition on input line 854.
 
 [12 <./Report_files/figure-latex/sim-het-plot-1.pdf>]
 
-Package xcolor Warning: Incompatible color definition on input line 894.
+Package xcolor Warning: Incompatible color definition on input line 895.
 
 
-Package xcolor Warning: Incompatible color definition on input line 902.
+Package xcolor Warning: Incompatible color definition on input line 903.
 
 
-Package xcolor Warning: Incompatible color definition on input line 902.
+Package xcolor Warning: Incompatible color definition on input line 903.
 
 
-Package xcolor Warning: Incompatible color definition on input line 908.
+Package xcolor Warning: Incompatible color definition on input line 909.
 
 
-Package xcolor Warning: Incompatible color definition on input line 912.
+Package xcolor Warning: Incompatible color definition on input line 913.
 
 
-Package xcolor Warning: Incompatible color definition on input line 912.
+Package xcolor Warning: Incompatible color definition on input line 913.
 
 
-Package xcolor Warning: Incompatible color definition on input line 918.
+Package xcolor Warning: Incompatible color definition on input line 919.
 
 
-Package xcolor Warning: Incompatible color definition on input line 923.
+Package xcolor Warning: Incompatible color definition on input line 924.
 
 
-Package xcolor Warning: Incompatible color definition on input line 923.
+Package xcolor Warning: Incompatible color definition on input line 924.
 
-<Report_files/figure-latex/sim-ts-plot-1.pdf, id=484, 361.35pt x 259.97125pt>
+<Report_files/figure-latex/sim-ts-plot-1.pdf, id=493, 361.35pt x 259.97125pt>
 File: Report_files/figure-latex/sim-ts-plot-1.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/sim-ts-plot-1.pdf>
-Package pdftex.def Info: Report_files/figure-latex/sim-ts-plot-1.pdf  used on input line 927.
+Package pdftex.def Info: Report_files/figure-latex/sim-ts-plot-1.pdf  used on input line 928.
 (pdftex.def)             Requested size: 216.1004pt x 155.47223pt.
-<Report_files/figure-latex/sim-ts-plot-2.pdf, id=485, 361.35pt x 259.97125pt>
+<Report_files/figure-latex/sim-ts-plot-2.pdf, id=494, 361.35pt x 259.97125pt>
 File: Report_files/figure-latex/sim-ts-plot-2.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/sim-ts-plot-2.pdf>
-Package pdftex.def Info: Report_files/figure-latex/sim-ts-plot-2.pdf  used on input line 927.
+Package pdftex.def Info: Report_files/figure-latex/sim-ts-plot-2.pdf  used on input line 928.
 (pdftex.def)             Requested size: 216.1004pt x 155.47223pt.
 [13]
 
-Package xcolor Warning: Incompatible color definition on input line 934.
+Package xcolor Warning: Incompatible color definition on input line 935.
 
 
-Package xcolor Warning: Incompatible color definition on input line 938.
+Package xcolor Warning: Incompatible color definition on input line 939.
 
 
-Package xcolor Warning: Incompatible color definition on input line 938.
+Package xcolor Warning: Incompatible color definition on input line 939.
 
-<Report_files/figure-latex/sim-ts-pacf-1.pdf, id=491, 361.35pt x 259.97125pt>
+<Report_files/figure-latex/sim-ts-pacf-1.pdf, id=500, 361.35pt x 259.97125pt>
 File: Report_files/figure-latex/sim-ts-pacf-1.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/sim-ts-pacf-1.pdf>
-Package pdftex.def Info: Report_files/figure-latex/sim-ts-pacf-1.pdf  used on input line 942.
+Package pdftex.def Info: Report_files/figure-latex/sim-ts-pacf-1.pdf  used on input line 943.
 (pdftex.def)             Requested size: 308.71486pt x 222.10318pt.
 
-Package xcolor Warning: Incompatible color definition on input line 958.
+Package xcolor Warning: Incompatible color definition on input line 959.
 
 [14 <./Report_files/figure-latex/sim-ts-plot-1.pdf> <./Report_files/figure-latex/sim-ts-plot-2.pdf> <./Report_files/figure-latex/sim-ts-pacf-1.pdf>]
 
-Package xcolor Warning: Incompatible color definition on input line 967.
+Package xcolor Warning: Incompatible color definition on input line 968.
 
 
-Package xcolor Warning: Incompatible color definition on input line 967.
+Package xcolor Warning: Incompatible color definition on input line 968.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1008.
+Package xcolor Warning: Incompatible color definition on input line 1009.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1014.
+Package xcolor Warning: Incompatible color definition on input line 1015.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1014.
+Package xcolor Warning: Incompatible color definition on input line 1015.
 
-<Report_files/figure-latex/sim-logit-baseline-plots-1.pdf, id=522, 361.35pt x 216.81pt>
+<Report_files/figure-latex/sim-logit-baseline-plots-1.pdf, id=531, 361.35pt x 216.81pt>
 File: Report_files/figure-latex/sim-logit-baseline-plots-1.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/sim-logit-baseline-plots-1.pdf>
-Package pdftex.def Info: Report_files/figure-latex/sim-logit-baseline-plots-1.pdf  used on input line 1018.
+Package pdftex.def Info: Report_files/figure-latex/sim-logit-baseline-plots-1.pdf  used on input line 1019.
 (pdftex.def)             Requested size: 141.12994pt x 84.67796pt.
-<Report_files/figure-latex/sim-logit-baseline-plots-2.pdf, id=523, 361.35pt x 216.81pt>
+<Report_files/figure-latex/sim-logit-baseline-plots-2.pdf, id=532, 361.35pt x 216.81pt>
 File: Report_files/figure-latex/sim-logit-baseline-plots-2.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/sim-logit-baseline-plots-2.pdf>
-Package pdftex.def Info: Report_files/figure-latex/sim-logit-baseline-plots-2.pdf  used on input line 1018.
+Package pdftex.def Info: Report_files/figure-latex/sim-logit-baseline-plots-2.pdf  used on input line 1019.
 (pdftex.def)             Requested size: 141.12994pt x 84.67796pt.
-<Report_files/figure-latex/sim-logit-baseline-plots-3.pdf, id=524, 361.35pt x 216.81pt>
+<Report_files/figure-latex/sim-logit-baseline-plots-3.pdf, id=533, 361.35pt x 216.81pt>
 File: Report_files/figure-latex/sim-logit-baseline-plots-3.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/sim-logit-baseline-plots-3.pdf>
-Package pdftex.def Info: Report_files/figure-latex/sim-logit-baseline-plots-3.pdf  used on input line 1018.
+Package pdftex.def Info: Report_files/figure-latex/sim-logit-baseline-plots-3.pdf  used on input line 1019.
 (pdftex.def)             Requested size: 141.12994pt x 84.67796pt.
 [15 <./Report_files/figure-latex/sim-logit-baseline-plots-1.pdf> <./Report_files/figure-latex/sim-logit-baseline-plots-2.pdf> <./Report_files/figure-latex/sim-logit-baseline-plots-3.pdf>]
 
-Package xcolor Warning: Incompatible color definition on input line 1034.
+Package xcolor Warning: Incompatible color definition on input line 1035.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1042.
+Package xcolor Warning: Incompatible color definition on input line 1043.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1042.
+Package xcolor Warning: Incompatible color definition on input line 1043.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1048.
+Package xcolor Warning: Incompatible color definition on input line 1049.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1052.
+Package xcolor Warning: Incompatible color definition on input line 1053.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1052.
+Package xcolor Warning: Incompatible color definition on input line 1053.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1058.
+Package xcolor Warning: Incompatible color definition on input line 1059.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1062.
+Package xcolor Warning: Incompatible color definition on input line 1063.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1062.
+Package xcolor Warning: Incompatible color definition on input line 1063.
 
-<Report_files/figure-latex/sim-logit-nonlinear-plot-1.pdf, id=548, 361.35pt x 259.97125pt>
+<Report_files/figure-latex/sim-logit-nonlinear-plot-1.pdf, id=557, 361.35pt x 259.97125pt>
 File: Report_files/figure-latex/sim-logit-nonlinear-plot-1.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/sim-logit-nonlinear-plot-1.pdf>
-Package pdftex.def Info: Report_files/figure-latex/sim-logit-nonlinear-plot-1.pdf  used on input line 1066.
+Package pdftex.def Info: Report_files/figure-latex/sim-logit-nonlinear-plot-1.pdf  used on input line 1067.
 (pdftex.def)             Requested size: 308.71486pt x 222.10318pt.
+
+Package xcolor Warning: Incompatible color definition on input line 1085.
+
 [16 <./Report_files/figure-latex/sim-logit-nonlinear-plot-1.pdf>]
 
-Package xcolor Warning: Incompatible color definition on input line 1084.
+Package xcolor Warning: Incompatible color definition on input line 1094.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1093.
+Package xcolor Warning: Incompatible color definition on input line 1094.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1093.
+Package xcolor Warning: Incompatible color definition on input line 1112.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1111.
+Package xcolor Warning: Incompatible color definition on input line 1116.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1115.
+Package xcolor Warning: Incompatible color definition on input line 1116.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1115.
+Package xcolor Warning: Incompatible color definition on input line 1122.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1121.
+Package xcolor Warning: Incompatible color definition on input line 1126.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1125.
-
-
-Package xcolor Warning: Incompatible color definition on input line 1125.
+Package xcolor Warning: Incompatible color definition on input line 1126.
 
 [17] [18]
 
-Package xcolor Warning: Incompatible color definition on input line 1180.
+Package xcolor Warning: Incompatible color definition on input line 1181.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1185.
+Package xcolor Warning: Incompatible color definition on input line 1186.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1185.
+Package xcolor Warning: Incompatible color definition on input line 1186.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1191.
+Package xcolor Warning: Incompatible color definition on input line 1192.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1195.
+Package xcolor Warning: Incompatible color definition on input line 1196.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1195.
+Package xcolor Warning: Incompatible color definition on input line 1196.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1209.
+Package xcolor Warning: Incompatible color definition on input line 1210.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1216.
+Package xcolor Warning: Incompatible color definition on input line 1217.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1216.
+Package xcolor Warning: Incompatible color definition on input line 1217.
 
 [19]
 
-Package xcolor Warning: Incompatible color definition on input line 1256.
+Package xcolor Warning: Incompatible color definition on input line 1257.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1261.
+Package xcolor Warning: Incompatible color definition on input line 1262.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1261.
+Package xcolor Warning: Incompatible color definition on input line 1262.
 
-<Report_files/figure-latex/wage-plots-1.pdf, id=575, 361.35pt x 259.97125pt>
+<Report_files/figure-latex/wage-plots-1.pdf, id=584, 361.35pt x 259.97125pt>
 File: Report_files/figure-latex/wage-plots-1.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/wage-plots-1.pdf>
-Package pdftex.def Info: Report_files/figure-latex/wage-plots-1.pdf  used on input line 1265.
+Package pdftex.def Info: Report_files/figure-latex/wage-plots-1.pdf  used on input line 1266.
 (pdftex.def)             Requested size: 216.1004pt x 155.47223pt.
-<Report_files/figure-latex/wage-plots-2.pdf, id=576, 361.35pt x 259.97125pt>
+<Report_files/figure-latex/wage-plots-2.pdf, id=585, 361.35pt x 259.97125pt>
 File: Report_files/figure-latex/wage-plots-2.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/wage-plots-2.pdf>
-Package pdftex.def Info: Report_files/figure-latex/wage-plots-2.pdf  used on input line 1265.
+Package pdftex.def Info: Report_files/figure-latex/wage-plots-2.pdf  used on input line 1266.
 (pdftex.def)             Requested size: 216.1004pt x 155.47223pt.
 
-Package xcolor Warning: Incompatible color definition on input line 1291.
+Package xcolor Warning: Incompatible color definition on input line 1292.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1297.
+Package xcolor Warning: Incompatible color definition on input line 1298.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1297.
+Package xcolor Warning: Incompatible color definition on input line 1298.
 
 [20 <./Report_files/figure-latex/wage-plots-1.pdf> <./Report_files/figure-latex/wage-plots-2.pdf>]
 
-Package xcolor Warning: Incompatible color definition on input line 1338.
+Package xcolor Warning: Incompatible color definition on input line 1339.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1343.
+Package xcolor Warning: Incompatible color definition on input line 1344.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1343.
+Package xcolor Warning: Incompatible color definition on input line 1344.
 
-<Report_files/figure-latex/wage-logit-plots-1.pdf, id=600, 361.35pt x 259.97125pt>
+<Report_files/figure-latex/wage-logit-plots-1.pdf, id=609, 361.35pt x 259.97125pt>
 File: Report_files/figure-latex/wage-logit-plots-1.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/wage-logit-plots-1.pdf>
-Package pdftex.def Info: Report_files/figure-latex/wage-logit-plots-1.pdf  used on input line 1347.
+Package pdftex.def Info: Report_files/figure-latex/wage-logit-plots-1.pdf  used on input line 1348.
 (pdftex.def)             Requested size: 216.1004pt x 155.47223pt.
-<Report_files/figure-latex/wage-logit-plots-2.pdf, id=601, 361.35pt x 259.97125pt>
+<Report_files/figure-latex/wage-logit-plots-2.pdf, id=610, 361.35pt x 259.97125pt>
 File: Report_files/figure-latex/wage-logit-plots-2.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/wage-logit-plots-2.pdf>
-Package pdftex.def Info: Report_files/figure-latex/wage-logit-plots-2.pdf  used on input line 1347.
+Package pdftex.def Info: Report_files/figure-latex/wage-logit-plots-2.pdf  used on input line 1348.
 (pdftex.def)             Requested size: 216.1004pt x 155.47223pt.
 [21 <./Report_files/figure-latex/wage-logit-plots-1.pdf> <./Report_files/figure-latex/wage-logit-plots-2.pdf>]
-<Report_files/figures/app_setup_tab.png, id=618, 1425.07407pt x 792.71156pt>
+<Report_files/figures/app_setup_tab.png, id=627, 1425.07407pt x 792.71156pt>
 File: Report_files/figures/app_setup_tab.png Graphic file (type png)
 <use Report_files/figures/app_setup_tab.png>
-Package pdftex.def Info: Report_files/figures/app_setup_tab.png  used on input line 1387.
+Package pdftex.def Info: Report_files/figures/app_setup_tab.png  used on input line 1388.
 (pdftex.def)             Requested size: 441.00732pt x 245.31468pt.
-<Report_files/figures/app_setup_logistic.png, id=619, 1425.07407pt x 797.22844pt>
+<Report_files/figures/app_setup_logistic.png, id=628, 1425.07407pt x 797.22844pt>
 File: Report_files/figures/app_setup_logistic.png Graphic file (type png)
 <use Report_files/figures/app_setup_logistic.png>
-Package pdftex.def Info: Report_files/figures/app_setup_logistic.png  used on input line 1394.
+Package pdftex.def Info: Report_files/figures/app_setup_logistic.png  used on input line 1395.
 (pdftex.def)             Requested size: 441.00732pt x 246.7125pt.
 [22 <./Report_files/figures/app_setup_tab.png>]
-<Report_files/figures/app_diagnostics_top.png, id=626, 1248.91594pt x 453.94594pt>
+<Report_files/figures/app_diagnostics_top.png, id=635, 1248.91594pt x 453.94594pt>
 File: Report_files/figures/app_diagnostics_top.png Graphic file (type png)
 <use Report_files/figures/app_diagnostics_top.png>
-Package pdftex.def Info: Report_files/figures/app_diagnostics_top.png  used on input line 1402.
+Package pdftex.def Info: Report_files/figures/app_diagnostics_top.png  used on input line 1403.
 (pdftex.def)             Requested size: 441.01474pt x 160.2965pt.
-<Report_files/figures/app_diagnostics_valueboxes.png, id=627, 1242.89343pt x 249.93375pt>
+<Report_files/figures/app_diagnostics_valueboxes.png, id=636, 1242.89343pt x 249.93375pt>
 File: Report_files/figures/app_diagnostics_valueboxes.png Graphic file (type png)
 <use Report_files/figures/app_diagnostics_valueboxes.png>
-Package pdftex.def Info: Report_files/figures/app_diagnostics_valueboxes.png  used on input line 1410.
+Package pdftex.def Info: Report_files/figures/app_diagnostics_valueboxes.png  used on input line 1411.
 (pdftex.def)             Requested size: 441.01216pt x 88.68324pt.
-<Report_files/figures/app_diagnostics_plots.png, id=628, 1249.66875pt x 656.4525pt>
+<Report_files/figures/app_diagnostics_plots.png, id=637, 1249.66875pt x 656.4525pt>
 File: Report_files/figures/app_diagnostics_plots.png Graphic file (type png)
 <use Report_files/figures/app_diagnostics_plots.png>
-Package pdftex.def Info: Report_files/figures/app_diagnostics_plots.png  used on input line 1417.
+Package pdftex.def Info: Report_files/figures/app_diagnostics_plots.png  used on input line 1418.
 (pdftex.def)             Requested size: 441.01361pt x 231.66498pt.
 [23 <./Report_files/figures/app_setup_logistic.png> <./Report_files/figures/app_diagnostics_top.png> <./Report_files/figures/app_diagnostics_valueboxes.png>]
-<Report_files/figures/app_diagnostics_valueboxes_logistic.png, id=636, 1248.16313pt x 247.67531pt>
+<Report_files/figures/app_diagnostics_valueboxes_logistic.png, id=645, 1248.16313pt x 247.67531pt>
 File: Report_files/figures/app_diagnostics_valueboxes_logistic.png Graphic file (type png)
 <use Report_files/figures/app_diagnostics_valueboxes_logistic.png>
-Package pdftex.def Info: Report_files/figures/app_diagnostics_valueboxes_logistic.png  used on input line 1425.
+Package pdftex.def Info: Report_files/figures/app_diagnostics_valueboxes_logistic.png  used on input line 1426.
 (pdftex.def)             Requested size: 441.01555pt x 87.51152pt.
-<Report_files/figures/app_diagnostics_plots_logistic.png, id=637, 1252.68pt x 656.4525pt>
+<Report_files/figures/app_diagnostics_plots_logistic.png, id=646, 1252.68pt x 656.4525pt>
 File: Report_files/figures/app_diagnostics_plots_logistic.png Graphic file (type png)
 <use Report_files/figures/app_diagnostics_plots_logistic.png>
-Package pdftex.def Info: Report_files/figures/app_diagnostics_plots_logistic.png  used on input line 1433.
+Package pdftex.def Info: Report_files/figures/app_diagnostics_plots_logistic.png  used on input line 1434.
 (pdftex.def)             Requested size: 441.02501pt x 231.11406pt.
 [24 <./Report_files/figures/app_diagnostics_plots.png> <./Report_files/figures/app_diagnostics_valueboxes_logistic.png>]
-<Report_files/figures/app_diagnostics_valueboxes_ts.png, id=644, 1245.15187pt x 250.68657pt>
+<Report_files/figures/app_diagnostics_valueboxes_ts.png, id=653, 1245.15187pt x 250.68657pt>
 File: Report_files/figures/app_diagnostics_valueboxes_ts.png Graphic file (type png)
 <use Report_files/figures/app_diagnostics_valueboxes_ts.png>
-Package pdftex.def Info: Report_files/figures/app_diagnostics_valueboxes_ts.png  used on input line 1441.
+Package pdftex.def Info: Report_files/figures/app_diagnostics_valueboxes_ts.png  used on input line 1442.
 (pdftex.def)             Requested size: 441.01553pt x 88.7897pt.
-<Report_files/figures/app_diagnostics_plots_ts.png, id=645, 1246.6575pt x 644.4075pt>
+<Report_files/figures/app_diagnostics_plots_ts.png, id=654, 1246.6575pt x 644.4075pt>
 File: Report_files/figures/app_diagnostics_plots_ts.png Graphic file (type png)
 <use Report_files/figures/app_diagnostics_plots_ts.png>
-Package pdftex.def Info: Report_files/figures/app_diagnostics_plots_ts.png  used on input line 1450.
+Package pdftex.def Info: Report_files/figures/app_diagnostics_plots_ts.png  used on input line 1451.
 (pdftex.def)             Requested size: 441.01619pt x 227.96489pt.
 [25 <./Report_files/figures/app_diagnostics_plots_logistic.png> <./Report_files/figures/app_diagnostics_valueboxes_ts.png>]
-<Report_files/figures/app_transformation_tab.png, id=652, 942.52126pt x 459.21562pt>
+<Report_files/figures/app_transformation_tab.png, id=661, 942.52126pt x 459.21562pt>
 File: Report_files/figures/app_transformation_tab.png Graphic file (type png)
 <use Report_files/figures/app_transformation_tab.png>
-Package pdftex.def Info: Report_files/figures/app_transformation_tab.png  used on input line 1458.
+Package pdftex.def Info: Report_files/figures/app_transformation_tab.png  used on input line 1459.
 (pdftex.def)             Requested size: 441.01477pt x 214.8714pt.
-
-Package xcolor Warning: Incompatible color definition on input line 1473.
-
 [26 <./Report_files/figures/app_diagnostics_plots_ts.png> <./Report_files/figures/app_transformation_tab.png>]
+<Report_files/figures/app_ai_interpretation.png, id=668, 724.20563pt x 467.49657pt>
+File: Report_files/figures/app_ai_interpretation.png Graphic file (type png)
+<use Report_files/figures/app_ai_interpretation.png>
+Package pdftex.def Info: Report_files/figures/app_ai_interpretation.png  used on input line 1491.
+(pdftex.def)             Requested size: 441.0244pt x 284.69455pt.
 
-Package xcolor Warning: Incompatible color definition on input line 1478.
+Package xcolor Warning: Incompatible color definition on input line 1508.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1478.
+Package xcolor Warning: Incompatible color definition on input line 1513.
 
 
-Overfull \hbox (30.37842pt too wide) in paragraph at lines 1542--1542
+Package xcolor Warning: Incompatible color definition on input line 1513.
+
+[27 <./Report_files/figures/app_ai_interpretation.png>]
+Overfull \hbox (30.37842pt too wide) in paragraph at lines 1577--1577
 []\T1/lmtt/m/n/10.95 Caught expected error: Error: Input must be a fitted model of class 'lm' or 'plm'.[] 
  []
 
-[27]
-Overfull \hbox (87.86575pt too wide) in paragraph at lines 1542--1542
+[28]
+Overfull \hbox (87.86575pt too wide) in paragraph at lines 1577--1577
 []\T1/lmtt/m/n/10.95 Caught expected error: Error: The 'roc' plot is only available for logistic (binary) models.[] 
  []
 
 
-Package xcolor Warning: Incompatible color definition on input line 1544.
+Package xcolor Warning: Incompatible color definition on input line 1579.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1548.
+Package xcolor Warning: Incompatible color definition on input line 1583.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1548.
+Package xcolor Warning: Incompatible color definition on input line 1583.
 
 
-Overfull \hbox (2.882pt too wide) in paragraph at lines 1584--1598
-\T1/lmtt/m/n/10.95 accuracy_box\T1/lmr/m/n/10.95 , \T1/lmtt/m/n/10.95 overall_box_logistic\T1/lmr/m/n/10.95 , and the \T1/lmtt/m/n/10.95 binned_residuals\T1/lmr/m/n/10.95 /\T1/lmtt/m/n/10.95 roc\T1/lmr/m/n/10.95 /\T1/lmtt/m/n/10.95 calibration
+Underfull \hbox (badness 1348) in paragraph at lines 1585--1600
+\T1/lmr/m/n/10.95 Hosmer--Lemeshow/AUC/McFadden $\OML/lmm/m/it/10.95 R[]$ \T1/lmr/m/n/10.95 di-ag-nos-tics, a \T1/lmtt/m/n/10.95 gt_tbl \T1/lmr/m/n/10.95 sum-mary and work-ing
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1584--1598
+Underfull \hbox (badness 10000) in paragraph at lines 1619--1633
 \T1/lmr/m/n/10.95 plots) read \T1/lmtt/m/n/10.95 diag_model()$diagnostics$logistic \T1/lmr/m/n/10.95 with-out first con-firm-ing
  []
 
-[28]
-Underfull \hbox (badness 1152) in paragraph at lines 1598--1605
+[29]
+Underfull \hbox (badness 1152) in paragraph at lines 1633--1640
 []\T1/lmr/bx/n/10.95 Formula-injection risk. \T1/lmr/m/n/10.95 The model for-mula was built with \T1/lmtt/m/n/10.95 paste(y, "~",
  []
 
 
-Package xcolor Warning: Incompatible color definition on input line 1631.
+Package xcolor Warning: Incompatible color definition on input line 1666.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1636.
+Package xcolor Warning: Incompatible color definition on input line 1671.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1636.
+Package xcolor Warning: Incompatible color definition on input line 1671.
 
 
-Overfull \hbox (7.38348pt too wide) in paragraph at lines 1658--1658
+Overfull \hbox (7.38348pt too wide) in paragraph at lines 1693--1693
 []\T1/lmtt/m/n/10.95 PASS: logistic-only outputs no longer error when diag_model() is non-logistic.[] 
  []
 
-[29]
-Overfull \hbox (64.87082pt too wide) in paragraph at lines 1676--1676
+[30]
+Overfull \hbox (64.87082pt too wide) in paragraph at lines 1711--1711
 []\T1/lmtt/m/n/10.95 PASS: sanitized column names ( Y..target., X.1, X.2 ) work end-to-end via reformulate().[] 
  []
 
 
-Overfull \hbox (82.11702pt too wide) in paragraph at lines 1682--1682
+Overfull \hbox (82.11702pt too wide) in paragraph at lines 1717--1717
 []\T1/lmtt/m/n/10.95 PASS: non-numeric outcome column is caught with a validate() message, not a silent bad fit.[] 
  []
 
 
-Package xcolor Warning: Incompatible color definition on input line 1696.
+Package xcolor Warning: Incompatible color definition on input line 1731.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1700.
+Package xcolor Warning: Incompatible color definition on input line 1735.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1700.
+Package xcolor Warning: Incompatible color definition on input line 1735.
 
-[30]
-Underfull \hbox (badness 1033) in paragraph at lines 1742--1749
+[31]
+Underfull \hbox (badness 1033) in paragraph at lines 1777--1784
 []\T1/lmr/bx/n/10.95 Logistic scope is cross-sectional only. \T1/lmr/m/n/10.95 The cur-rent lo-gis-tic ex-ten-sion sup-ports
  []
 
-[31] [32]
-Overfull \hbox (11.50264pt too wide) in paragraph at lines 1831--1832
+[32] [33]
+Overfull \hbox (11.50264pt too wide) in paragraph at lines 1865--1866
 \T1/lmr/m/n/9 late_ols_data()/simulate_ts_data()/simulate_logit_data() 
  []
 
-[33]
-LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 1843.
-
-Package xcolor Warning: Incompatible color definition on input line 1860.
-
-
-Package xcolor Warning: Incompatible color definition on input line 1867.
-
-
-Package xcolor Warning: Incompatible color definition on input line 1867.
-
-
-Package xcolor Warning: Incompatible color definition on input line 1871.
-
-
-Package xcolor Warning: Incompatible color definition on input line 1880.
-
-
-Package xcolor Warning: Incompatible color definition on input line 1880.
-
-
-Package xcolor Warning: Incompatible color definition on input line 1889.
-
-
-Package xcolor Warning: Incompatible color definition on input line 1893.
-
-
-Package xcolor Warning: Incompatible color definition on input line 1893.
-
 [34]
+LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <14.4> not available
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 1877.
 
-Package xcolor Warning: Incompatible color definition on input line 1922.
-
-
-Package xcolor Warning: Incompatible color definition on input line 1926.
-
-
-Package xcolor Warning: Incompatible color definition on input line 1926.
+Package xcolor Warning: Incompatible color definition on input line 1894.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1948.
+Package xcolor Warning: Incompatible color definition on input line 1901.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1957.
+Package xcolor Warning: Incompatible color definition on input line 1901.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1957.
+Package xcolor Warning: Incompatible color definition on input line 1905.
 
 
-Overfull \hbox (18.88095pt too wide) in paragraph at lines 1961--1961
+Package xcolor Warning: Incompatible color definition on input line 1914.
+
+
+Package xcolor Warning: Incompatible color definition on input line 1914.
+
+
+Package xcolor Warning: Incompatible color definition on input line 1923.
+
+
+Package xcolor Warning: Incompatible color definition on input line 1927.
+
+
+Package xcolor Warning: Incompatible color definition on input line 1927.
+
+[35]
+
+Package xcolor Warning: Incompatible color definition on input line 1956.
+
+
+Package xcolor Warning: Incompatible color definition on input line 1960.
+
+
+Package xcolor Warning: Incompatible color definition on input line 1960.
+
+
+Package xcolor Warning: Incompatible color definition on input line 1982.
+
+
+Package xcolor Warning: Incompatible color definition on input line 1991.
+
+
+Package xcolor Warning: Incompatible color definition on input line 1991.
+
+
+Overfull \hbox (18.88095pt too wide) in paragraph at lines 1995--1995
 []\T1/lmtt/m/n/10.95 ## Breusch-Pagan p = 0.6881 | Durbin-Watson p = 0.2606 | Shapiro-Wilk p = 0.1048[] 
  []
 
 
-Package xcolor Warning: Incompatible color definition on input line 1967.
+Package xcolor Warning: Incompatible color definition on input line 2001.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1973.
+Package xcolor Warning: Incompatible color definition on input line 2007.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1973.
+Package xcolor Warning: Incompatible color definition on input line 2007.
 
-<Report_files/figure-latex/vignette-plots-1.pdf, id=703, 361.35pt x 216.81pt>
+<Report_files/figure-latex/vignette-plots-1.pdf, id=718, 361.35pt x 216.81pt>
 File: Report_files/figure-latex/vignette-plots-1.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/vignette-plots-1.pdf>
-Package pdftex.def Info: Report_files/figure-latex/vignette-plots-1.pdf  used on input line 1977.
+Package pdftex.def Info: Report_files/figure-latex/vignette-plots-1.pdf  used on input line 2011.
 (pdftex.def)             Requested size: 141.12994pt x 84.67796pt.
-<Report_files/figure-latex/vignette-plots-2.pdf, id=704, 361.35pt x 216.81pt>
+<Report_files/figure-latex/vignette-plots-2.pdf, id=719, 361.35pt x 216.81pt>
 File: Report_files/figure-latex/vignette-plots-2.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/vignette-plots-2.pdf>
-Package pdftex.def Info: Report_files/figure-latex/vignette-plots-2.pdf  used on input line 1977.
+Package pdftex.def Info: Report_files/figure-latex/vignette-plots-2.pdf  used on input line 2011.
 (pdftex.def)             Requested size: 141.12994pt x 84.67796pt.
-<Report_files/figure-latex/vignette-plots-3.pdf, id=705, 361.35pt x 216.81pt>
+<Report_files/figure-latex/vignette-plots-3.pdf, id=720, 361.35pt x 216.81pt>
 File: Report_files/figure-latex/vignette-plots-3.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/vignette-plots-3.pdf>
-Package pdftex.def Info: Report_files/figure-latex/vignette-plots-3.pdf  used on input line 1977.
+Package pdftex.def Info: Report_files/figure-latex/vignette-plots-3.pdf  used on input line 2011.
 (pdftex.def)             Requested size: 141.12994pt x 84.67796pt.
-[35]
+[36]
 
-Package xcolor Warning: Incompatible color definition on input line 1984.
-
-
-Package xcolor Warning: Incompatible color definition on input line 1988.
+Package xcolor Warning: Incompatible color definition on input line 2018.
 
 
-Package xcolor Warning: Incompatible color definition on input line 1988.
+Package xcolor Warning: Incompatible color definition on input line 2022.
 
-<Report_files/figure-latex/vignette-plots2-1.pdf, id=711, 361.35pt x 259.97125pt>
+
+Package xcolor Warning: Incompatible color definition on input line 2022.
+
+<Report_files/figure-latex/vignette-plots2-1.pdf, id=726, 361.35pt x 259.97125pt>
 File: Report_files/figure-latex/vignette-plots2-1.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/vignette-plots2-1.pdf>
-Package pdftex.def Info: Report_files/figure-latex/vignette-plots2-1.pdf  used on input line 1992.
+Package pdftex.def Info: Report_files/figure-latex/vignette-plots2-1.pdf  used on input line 2026.
 (pdftex.def)             Requested size: 308.71486pt x 222.10318pt.
 
-Package xcolor Warning: Incompatible color definition on input line 2002.
+Package xcolor Warning: Incompatible color definition on input line 2036.
 
 
-Package xcolor Warning: Incompatible color definition on input line 2006.
+Package xcolor Warning: Incompatible color definition on input line 2040.
 
 
-Package xcolor Warning: Incompatible color definition on input line 2006.
+Package xcolor Warning: Incompatible color definition on input line 2040.
 
 
-Package xcolor Warning: Incompatible color definition on input line 2017.
+Package xcolor Warning: Incompatible color definition on input line 2051.
 
 
-Package xcolor Warning: Incompatible color definition on input line 2025.
+Package xcolor Warning: Incompatible color definition on input line 2059.
 
 
-Package xcolor Warning: Incompatible color definition on input line 2025.
+Package xcolor Warning: Incompatible color definition on input line 2059.
 
 
-Overfull \hbox (1611.28014pt too wide) in paragraph at lines 2029--2029
+Overfull \hbox (1611.28014pt too wide) in paragraph at lines 2063--2063
 []\T1/lmtt/m/n/10.95 ## Warning: Heteroskedasticity detected. Consider using robust standard errors. Warning: Normality Assumption Violated!The Shapiro-Wilk test rejects residual normality (p = 0.0236). Coefficients can remain unbiased, but t/F tests may be unreliable in small samples. Check the Q-Q plot for heavy tails or outliers, and consider a log or other transformation.[] 
  []
 
-[36 <./Report_files/figure-latex/vignette-plots-1.pdf> <./Report_files/figure-latex/vignette-plots-2.pdf> <./Report_files/figure-latex/vignette-plots-3.pdf> <./Report_files/figure-latex/vignette-plots2-1.pdf>]
+[37 <./Report_files/figure-latex/vignette-plots-1.pdf> <./Report_files/figure-latex/vignette-plots-2.pdf> <./Report_files/figure-latex/vignette-plots-3.pdf> <./Report_files/figure-latex/vignette-plots2-1.pdf>]
 
-Package xcolor Warning: Incompatible color definition on input line 2038.
-
-
-Package xcolor Warning: Incompatible color definition on input line 2052.
+Package xcolor Warning: Incompatible color definition on input line 2072.
 
 
-Package xcolor Warning: Incompatible color definition on input line 2052.
+Package xcolor Warning: Incompatible color definition on input line 2086.
 
 
-Package xcolor Warning: Incompatible color definition on input line 2058.
+Package xcolor Warning: Incompatible color definition on input line 2086.
 
 
-Package xcolor Warning: Incompatible color definition on input line 2062.
+Package xcolor Warning: Incompatible color definition on input line 2092.
 
 
-Package xcolor Warning: Incompatible color definition on input line 2062.
+Package xcolor Warning: Incompatible color definition on input line 2096.
 
 
-Package xcolor Warning: Incompatible color definition on input line 2081.
+Package xcolor Warning: Incompatible color definition on input line 2096.
 
 
-Package xcolor Warning: Incompatible color definition on input line 2097.
+Package xcolor Warning: Incompatible color definition on input line 2115.
 
 
-Package xcolor Warning: Incompatible color definition on input line 2097.
+Package xcolor Warning: Incompatible color definition on input line 2131.
 
 
-Package xcolor Warning: Incompatible color definition on input line 2097.
-
-[37]
-
-Package xcolor Warning: Incompatible color definition on input line 2097.
+Package xcolor Warning: Incompatible color definition on input line 2131.
 
 
-Package xcolor Warning: Incompatible color definition on input line 2097.
+Package xcolor Warning: Incompatible color definition on input line 2131.
+
+[38]
+
+Package xcolor Warning: Incompatible color definition on input line 2131.
 
 
-Overfull \hbox (59.12209pt too wide) in paragraph at lines 2101--2101
+Package xcolor Warning: Incompatible color definition on input line 2131.
+
+
+Overfull \hbox (59.12209pt too wide) in paragraph at lines 2135--2135
 []\T1/lmtt/m/n/10.95 ## Hosmer-Lemeshow p = 0.5774 | McFadden R2 = 0.3873 | AUC = 0.8858 | Accuracy = 0.8067[] 
  []
 
 
-Package xcolor Warning: Incompatible color definition on input line 2103.
+Package xcolor Warning: Incompatible color definition on input line 2137.
 
 
-Package xcolor Warning: Incompatible color definition on input line 2109.
+Package xcolor Warning: Incompatible color definition on input line 2143.
 
 
-Package xcolor Warning: Incompatible color definition on input line 2109.
+Package xcolor Warning: Incompatible color definition on input line 2143.
 
-<Report_files/figure-latex/vignette-logistic-plots-1.pdf, id=755, 361.35pt x 216.81pt>
+<Report_files/figure-latex/vignette-logistic-plots-1.pdf, id=770, 361.35pt x 216.81pt>
 File: Report_files/figure-latex/vignette-logistic-plots-1.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/vignette-logistic-plots-1.pdf>
-Package pdftex.def Info: Report_files/figure-latex/vignette-logistic-plots-1.pdf  used on input line 2113.
+Package pdftex.def Info: Report_files/figure-latex/vignette-logistic-plots-1.pdf  used on input line 2147.
 (pdftex.def)             Requested size: 141.12994pt x 84.67796pt.
-<Report_files/figure-latex/vignette-logistic-plots-2.pdf, id=756, 361.35pt x 216.81pt>
+<Report_files/figure-latex/vignette-logistic-plots-2.pdf, id=771, 361.35pt x 216.81pt>
 File: Report_files/figure-latex/vignette-logistic-plots-2.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/vignette-logistic-plots-2.pdf>
-Package pdftex.def Info: Report_files/figure-latex/vignette-logistic-plots-2.pdf  used on input line 2113.
+Package pdftex.def Info: Report_files/figure-latex/vignette-logistic-plots-2.pdf  used on input line 2147.
 (pdftex.def)             Requested size: 141.12994pt x 84.67796pt.
-<Report_files/figure-latex/vignette-logistic-plots-3.pdf, id=757, 361.35pt x 216.81pt>
+<Report_files/figure-latex/vignette-logistic-plots-3.pdf, id=772, 361.35pt x 216.81pt>
 File: Report_files/figure-latex/vignette-logistic-plots-3.pdf Graphic file (type pdf)
 <use Report_files/figure-latex/vignette-logistic-plots-3.pdf>
-Package pdftex.def Info: Report_files/figure-latex/vignette-logistic-plots-3.pdf  used on input line 2113.
+Package pdftex.def Info: Report_files/figure-latex/vignette-logistic-plots-3.pdf  used on input line 2147.
 (pdftex.def)             Requested size: 141.12994pt x 84.67796pt.
 
-Package xcolor Warning: Incompatible color definition on input line 2123.
+Package xcolor Warning: Incompatible color definition on input line 2157.
 
 
-Package xcolor Warning: Incompatible color definition on input line 2127.
+Package xcolor Warning: Incompatible color definition on input line 2161.
 
 
-Package xcolor Warning: Incompatible color definition on input line 2127.
+Package xcolor Warning: Incompatible color definition on input line 2161.
 
 
-Overfull \hbox (16.05421pt too wide) in paragraph at lines 2167--2167
+Overfull \hbox (16.05421pt too wide) in paragraph at lines 2201--2201
 []|\T1/lmr/m/n/10.95 remediation_advice()|  
  []
 
 
-Overfull \hbox (11.58281pt too wide) in paragraph at lines 2169--2169
+Overfull \hbox (11.58281pt too wide) in paragraph at lines 2203--2203
 []|\T1/lmr/m/n/10.95 simulate_ols_data()|  
  []
 
 
-Overfull \hbox (7.32463pt too wide) in paragraph at lines 2171--2171
+Overfull \hbox (7.32463pt too wide) in paragraph at lines 2205--2205
 []|\T1/lmr/m/n/10.95 simulate_ts_data()|  
  []
 
 
-Overfull \hbox (20.03868pt too wide) in paragraph at lines 2173--2173
+Overfull \hbox (20.03868pt too wide) in paragraph at lines 2207--2207
 []|\T1/lmr/m/n/10.95 simulate_logit_data()|  
  []
 
-[38 <./Report_files/figure-latex/vignette-logistic-plots-1.pdf> <./Report_files/figure-latex/vignette-logistic-plots-2.pdf> <./Report_files/figure-latex/vignette-logistic-plots-3.pdf>] [39] [40] [41] (./Report.aux)
+[39 <./Report_files/figure-latex/vignette-logistic-plots-1.pdf> <./Report_files/figure-latex/vignette-logistic-plots-2.pdf> <./Report_files/figure-latex/vignette-logistic-plots-3.pdf>] [40] [41] [42] (./Report.aux)
  ***********
 LaTeX2e <2026-06-01>
 L3 programming layer <2026-07-20>
  ***********
 Package rerunfilecheck Info: File `Report.out' has not changed.
-(rerunfilecheck)             Checksum: D50795475421586A238CD03433EC14B6;10153.
+(rerunfilecheck)             Checksum: B9FC44A08BA9645BE904BE7F337B3221;10441.
 Package logreq Info: Writing requests to 'Report.run.xml'.
 \openout1 = `Report.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 23262 strings out of 469106
- 424036 string characters out of 5456976
- 1384304 words of memory out of 5000000
- 51751 multiletter control sequences out of 15000+600000
+ 23274 strings out of 469106
+ 424496 string characters out of 5456976
+ 1385361 words of memory out of 5000000
+ 51760 multiletter control sequences out of 15000+600000
  681155 words of font info for 77 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  63i,10n,83p,1479b,5050s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/Users/A01411/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb><c:/Users/A01411/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/A01411/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmex10.pfb><c:/Users/A01411/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb><c:/Users/A01411/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi8.pfb><c:/Users/A01411/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb><c:/Users/A01411/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/A01411/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb><c:/Users/A01411/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb><c:/Users/A01411/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr9.pfb><c:/Users/A01411/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb><c:/Users/A01411/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb><c:/Users/A01411/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy8.pfb><c:/Users/A01411/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb><c:/Users/A01411/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb><c:/Users/A01411/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt12.pfb><c:/Users/A01411/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on Report.pdf (44 pages, 2044337 bytes).
+Output written on Report.pdf (45 pages, 2092996 bytes).
 PDF statistics:
- 916 PDF objects out of 1000 (max. 8388607)
- 760 compressed objects within 8 object streams
- 162 named destinations out of 1000 (max. 500000)
- 543 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 932 PDF objects out of 1000 (max. 8388607)
+ 773 compressed objects within 8 object streams
+ 165 named destinations out of 1000 (max. 500000)
+ 556 words of extra memory for PDF output out of 10000 (max. 10000000)
 
