@@ -160,11 +160,11 @@ $if(loa)$
 $endif$
 
 % Create subtitle command for use in maketitle
-\newcommand{\subtitle}[1]{
-  \posttitle{
-    \begin{center}\large#1\end{center}
-    }
-}
+%\newcommand{\subtitle}[1]{
+%  \posttitle{
+%    \begin{center}\large#1\end{center}
+%    }
+%} 
 
 \setlength{\droptitle}{-2em}
 $if(title)$
@@ -261,11 +261,12 @@ $endif$
 	  \end{flushright}
 	\end{minipage}
   \\
-  \vspace{1.5cm}
   \begin{center}
   \huge{$title$}\\
+$if(subtitle)$
   \vspace{.25cm}
   \Large{$subtitle$}\\
+$endif$
   \vspace{0.5cm}
   \large{$type$}\\
   \vspace{1cm}
@@ -274,7 +275,7 @@ $endif$
   \vspace{0.75cm}
   \large{\IfLanguageName{english}{from:}{von:}}\\
   \vspace{0.5cm}
-  $author$\\
+  $for(author)$$author$$sep$ \\ $endfor$\\
   \end{center}
   \vspace{4cm}
   
@@ -285,7 +286,7 @@ $endif$
   \IfLanguageName{english}{Matriculation Number:}{Matrikelnummer}
   \end{minipage}
   \begin{minipage}[t]{0.7\textwidth}
-  \hspace{1cm}$studid$
+  \hspace{1cm}$for(studid)$$studid$$sep$, $endfor$
   \end{minipage}
 
   \noindent\begin{minipage}[t]{0.5\textwidth}
@@ -313,14 +314,7 @@ $endif$
   Semester:
   \end{minipage}
   \begin{minipage}[t]{0.7\textwidth}
-  \hspace{1cm}\IfLanguageName{english}{\nth{$ssemester$} Semester}{$ssemester$. Fachsemester}
-  \end{minipage}
-
-  \noindent\begin{minipage}[t]{0.5\textwidth}
-  \IfLanguageName{english}{Graduation (est.):}{Vsl. Studienabschluss:}
-  \end{minipage}
-  \begin{minipage}[t]{0.7\textwidth}
-  \hspace{1cm}$estdegree_emester$
+  \hspace{1cm}$ssemester$
   \end{minipage}
 
   \noindent\begin{minipage}[t]{0.5\textwidth}

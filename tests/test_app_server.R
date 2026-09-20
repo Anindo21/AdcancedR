@@ -11,7 +11,7 @@ suppressMessages({
 })
 source("R/diag_lm_class.R")
 source("R/simulate_data.R")
-sys.source("App.R", envir = globalenv())
+sys.source("app.R", envir = globalenv())
 
 cat("== Test 1: Linear / Cross-Section default flow ==\n")
 shiny::testServer(server, {
@@ -156,7 +156,7 @@ shiny::testServer(server, {
   session$setInputs(y_var = "Y", x_vars = c("X1", "X2"), run_analysis_btn = 1)
 
   err <- tryCatch({ diag_model(); NULL }, error = function(e) e)
-  ok <- !is.null(err) && grepl("could not be converted to numeric", conditionMessage(err))
+  ok <- !is.null(err) && grepl("conversion failed", conditionMessage(err))
   stopifnot(ok)
   cat("PASS: non-numeric outcome column is caught with a validate() message, not a silent bad fit.\n")
   unlink(tmpfile)
@@ -178,8 +178,8 @@ shiny::testServer(server, {
 
   err <- tryCatch({ diag_model(); NULL }, error = function(e) e)
   ok <- !is.null(err) && inherits(err, "shiny.silent.error") &&
-        (identical(conditionMessage(err), "") ||
-         grepl("panel index", conditionMessage(err), ignore.case = TRUE))
+    (identical(conditionMessage(err), "") ||
+       grepl("panel index", conditionMessage(err), ignore.case = TRUE))
   stopifnot(ok)
   cat("PASS: blank panel index fields are rejected with a validate() message.\n")
   unlink(tmpfile)
