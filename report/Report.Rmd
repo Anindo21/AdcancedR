@@ -17,7 +17,7 @@ output:
     citation_package: biblatex
     number_sections: true
     toc: true
-lot: false
+lot: true
 lof: true
 loa: false
 graphics: true
