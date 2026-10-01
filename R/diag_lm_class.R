@@ -432,75 +432,9 @@ remediation_advice.diag_lm <- function(object, ...) {
   if (object$data_type %in% c("time-series", "ts")) {
     adf_pvalue <- object$diagnostics$ts$adf_pvalue
     if (!is.na(adf_pvalue) && adf_pvalue >= 0.05) {
-      alerts <- c(alerts, paste0(
-        "<div class='alert alert-danger'><b>Warning: Non-Stationary Series (Unit Root Detected)!</b><br/>",
-        "The ADF test failed to reject a unit root (p = ", .fmt_p_alert(adf_pvalue),
-        "). Consider first-differencing or using log returns.</div>"
-      ))
+      alerts <- c(alerts, paste0("<div class='alert alert-danger'><b>Warning: Non-Stationary Series (Unit Root Detected)!</b><br/>The ADF test failed to reject a unit root (p = ", .fmt_p_alert(adf_pvalue), "). Consider first-differencing or using log returns.</div>"))
     }
   }
-  
-  if (identical(object$data_type, "cross-section")) {
-    d <- object$diagnostics
-    
-    if (!is.na(d$bp_pvalue) && d$bp_pvalue < 0.05) {
-      alerts <- c(alerts, paste0(
-        "<div class='alert alert-warning'><b>Heteroskedasticity detected</b> (Breusch-Pagan, p = ",
-        .fmt_p_alert(d$bp_pvalue), "). Standard errors may be unreliable -- consider ",
-        "heteroskedasticity-robust (HC1) standard errors under \"Model Adjustments\".</div>"
-      ))
-    }
-    if (!is.na(d$dw_pvalue) && d$dw_pvalue < 0.05) {
-      alerts <- c(alerts, paste0(
-        "<div class='alert alert-warning'><b>Serial correlation detected</b> (Durbin-Watson, p = ",
-        .fmt_p_alert(d$dw_pvalue), "). If this data is time-ordered, consider using the ",
-        "Time Series data structure and/or robust standard errors.</div>"
-      ))
-    }
-    if (!is.na(d$shapiro_pvalue) && d$shapiro_pvalue < 0.05) {
-      test_name <- if (!is.null(d$normality_test_name) && !is.na(d$normality_test_name)) d$normality_test_name else "Shapiro-Wilk"
-      alerts <- c(alerts, paste0(
-        "<div class='alert alert-info'><b>Non-normal residuals</b> (", test_name, ", p = ",
-        .fmt_p_alert(d$shapiro_pvalue), "). With a large sample this is often not a major concern; ",
-        "with a small sample, consider whether outliers or a skewed outcome are responsible.</div>"
-      ))
-    }
-    vif_values <- suppressWarnings(as.numeric(d$vif_scores))
-    vif_values <- vif_values[is.finite(vif_values)]
-    if (length(vif_values) > 0 && max(vif_values) >= 5) {
-      alerts <- c(alerts, paste0(
-        "<div class='alert alert-warning'><b>Multicollinearity detected</b> (max VIF = ",
-        round(max(vif_values), 2), "). Consider dropping or combining highly correlated predictors.</div>"
-      ))
-    }
-  }
-  
-  if (identical(object$data_type, "binary")) {
-    lg <- object$diagnostics$logistic
-    if (!is.null(lg)) {
-      if (!is.na(lg$hl_pvalue) && lg$hl_pvalue < 0.05) {
-        alerts <- c(alerts, paste0(
-          "<div class='alert alert-warning'><b>Poor calibration</b> (Hosmer-Lemeshow, p = ",
-          .fmt_p_alert(lg$hl_pvalue), "). The model's predicted probabilities may not match ",
-          "observed outcome rates well -- check the Calibration/Binned Residual plots.</div>"
-        ))
-      }
-      if (!is.na(lg$auc) && lg$auc < 0.7) {
-        alerts <- c(alerts, paste0(
-          "<div class='alert alert-info'><b>Weak discrimination</b> (AUC = ", round(lg$auc, 3),
-          "). The model does not separate the two classes well.</div>"
-        ))
-      }
-      if (isTRUE(lg$separation_flag)) {
-        alerts <- c(alerts, paste0(
-          "<div class='alert alert-danger'><b>Possible (quasi-)complete separation detected</b> ",
-          "(implausibly large standard errors). Coefficient estimates may be unstable/unreliable.</div>"
-        ))
-      }
-    }
-  }
-  
-
   
   # =========================================================================
   # TEMPORARILY HIDDEN: Panel data remediation advice

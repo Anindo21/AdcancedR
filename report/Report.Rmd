@@ -17,7 +17,7 @@ output:
     citation_package: biblatex
     number_sections: true
     toc: true
-lot: true
+lot: false
 lof: true
 loa: false
 graphics: true
@@ -182,11 +182,11 @@ kbl(methods_tbl, caption = "Public interface of the diag\\_lm class",
   $$Y_i \sim \text{Bernoulli}\big(\operatorname{logit}^{-1}(\eta_i)\big), \qquad
     \eta_i = 1.4\,X_{1i} - 1.1\,X_{2i},$$
   with three optional violations: `multicollinear` correlates $X_2$ with $X_1$; `nonlinear` adds an omitted $0.6\,X_1^2$ term to $\eta_i$ so the fitted linear-in-the-logit model is mis-specified; and `imbalance` shifts the intercept to produce a rare positive class ($\approx 10\%$).
-- `simulate_panel_data(n_entities, n_periods, correlated_effects, serial_correlation, heteroskedastic, seed)` generates a balanced panel ($Y = 5 + \alpha_i + 2X + e$) with a true entity-level effect $\alpha_i$. `correlated_effects` is the key switch for the Hausman test: when TRUE, $\alpha_i$ is constructed to correlate with each entity's mean $X$ (the condition under which Random Effects becomes inconsistent, so Hausman should favor Fixed Effects); when FALSE, $\alpha_i$ is independent of $X$, so Random Effects remains consistent and Hausman should not reject it. `serial_correlation` optionally makes the errors AR(1) within each entity (independent across entities), giving the panel Breusch-Godfrey test something genuine to detect. Column names (`entity`, `year`) are chosen deliberately so the app's index-guessing logic picks them up automatically.
+- `simulate_panel_data(n_entities, n_periods, correlated_effects, serial_correlation, heteroskedastic, seed)` generates a balanced panel ($Y = 5 + \alpha_i + 2X + e$) with a true entity-level effect $\alpha_i$. `correlated_effects` is the key switch for the Hausman test: when TRUE, $\alpha_i$ is constructed to correlate with each entity's mean $X$ (the condition under which Random Effects becomes inconsistent, so Hausman should favour Fixed Effects); when FALSE, $\alpha_i$ is independent of $X$, so Random Effects remains consistent and Hausman should not reject it. `serial_correlation` optionally makes the errors AR(1) within each entity (independent across entities), giving the panel Breusch-Godfrey test something genuine to detect. Column names (`entity`, `year`) are chosen deliberately so the app's index-guessing logic picks them up automatically.
 
 ## The Shiny Application
 
-`App.R` is the sole application in the project. Its server function keeps almost no statistical logic of its own: it maps UI inputs -- including a **Model Family** selector with three values, `linear` (OLS), `logistic` (Binomial), and `ts` (Univariate Time Series) -- to `simulate_ols_data()`, `simulate_ts_data()`, `simulate_logit_data()`, or `simulate_panel_data()` (chosen by data source, model family, and data structure together), a bundled "available" dataset, or an uploaded CSV. For the `linear` and `logistic` families it builds a model formula from the selected outcome/predictor columns (optionally with interaction terms, or an LSDV specification for panel data), fits `lm()`, `plm()`, or `glm(family = binomial())` accordingly, and wraps the result in `new_diag_lm()`. Selecting `ts` takes a different path: rather than fitting a regression, the app reads a single numeric column directly from the current data and hands it to `new_diag_lm_univariate()`, diagnosing the series against its own history instead of against other predictors -- a deliberate simplification, since a genuine regression on time-ordered data remains available by choosing `linear` with a Time-Series data structure. Either path's result is rendered through the same `summary()`/`plot()` outputs.
+`app.R` is the sole application in the project. Its server function keeps almost no statistical logic of its own: it maps UI inputs -- including a **Model Family** selector with three values, `linear` (OLS), `logistic` (Binomial), and `ts` (Univariate Time Series) -- to `simulate_ols_data()`, `simulate_ts_data()`, `simulate_logit_data()`, or `simulate_panel_data()` (chosen by data source, model family, and data structure together), a bundled "available" dataset, or an uploaded CSV. For the `linear` and `logistic` families it builds a model formula from the selected outcome/predictor columns (optionally with interaction terms, or an LSDV specification for panel data), fits `lm()`, `plm()`, or `glm(family = binomial())` accordingly, and wraps the result in `new_diag_lm()`. Selecting `ts` takes a different path: rather than fitting a regression, the app reads a single numeric column directly from the current data and hands it to `new_diag_lm_univariate()`, diagnosing the series against its own history instead of against other predictors -- a deliberate simplification, since a genuine regression on time-ordered data remains available by choosing `linear` with a Time-Series data structure. Either path's result is rendered through the same `summary()`/`plot()` outputs.
 
 Two architectural points deserve emphasis (the resulting UI is illustrated with screenshots in Section 5):
 
@@ -210,11 +210,11 @@ For cross-sectional data, `diag_lm` reports the Durbin--Watson statistic [@durbi
 $$DW = \frac{\sum_{t=2}^{n}(\hat\varepsilon_t - \hat\varepsilon_{t-1})^2}{\sum_{t=1}^{n}\hat\varepsilon_t^2} \approx 2(1-\hat\rho),$$
 where $\hat\rho$ is the estimated first-order autocorrelation of the residuals; $DW \approx 2$ indicates no serial correlation. For time-series data, `diag_lm` additionally reports the Breusch--Godfrey test [@godfrey1978], which generalises Durbin--Watson to higher-order autocorrelation and remains valid with lagged dependent variables, and the Ljung--Box portmanteau test [@ljungbox1978] on the residual autocorrelation function.
 
-**Why the diagnostic plots differ for time series.** Residuals-vs-Fitted and Scale-Location are constructed against the fitted value and reveal heteroskedasticity or non-linearity; neither can display serial structure, since that structure is indexed by time, not by the fitted value. `diag_lm` therefore also offers a Residuals-over-Time plot (the direct visual analogue of the Breusch--Godfrey and Ljung--Box tests) and a PACF plot alongside the standard ACF plot, so the order of any remaining autocorrelation can be read off directly. `app.R` (Section 5) surfaces exactly this curated set -- Residuals-over-Time, ACF, PACF, Normal Q-Q and Residual Histogram -- for time-series data, rather than reusing the cross-sectional plot menu.
+**Why the diagnostic plots differ for time series.** Residuals-vs-Fitted and Scale-Location are constructed against the fitted value and reveal heteroskedasticity or non-linearity; neither can display serial structure, since that structure is indexed by time, not by the fitted value. `diag_lm` therefore also offers a Residuals-over-Time plot (the direct visual analogue of the Breusch--Godfrey and Ljung--Box tests) and a PACF plot alongside the standard ACF plot, so the order of any remaining autocorrelation can be read off directly. `app.R` (Section 6) surfaces exactly this curated set -- Residuals-over-Time, ACF, PACF, Normal Q-Q and Residual Histogram -- for time-series data, rather than reusing the cross-sectional plot menu.
 
 **A caveat on residual-based unit-root testing.** When the `linear` model family is combined with a Time-Series data structure (e.g. regressing one stock index on others, as in the app's `stock_indices.csv` example), `diag_lm` runs the Augmented Dickey--Fuller test on the fitted regression's *residuals* rather than a raw series. This is precisely the Engle--Granger cointegration setup, whose correct critical values are those Engle and Granger derived for regression residuals, not the standard MacKinnon table used by `tseries::adf.test()`. Applying generic ADF critical values to estimated residuals is known to over-reject the unit-root null, creating false confidence that a regression between two integrated series is not spurious. The residual-based ADF check inside `diag_lm` should therefore be read as an indicative signal rather than a formally valid cointegration test. A user who suspects both the outcome and a predictor may be non-stationary is better served by first diagnosing each series individually through the univariate pathway (Section 3.6) before regressing one on the other.
 
-## Normality: The Shapiro--Wilk Test, Jarque-Bera Test
+## Normality: The Shapiro--Wilk Test, Bera-Jarque Test
 
 Small-sample $t$/$F$ inference relies on normally distributed errors. The Shapiro--Wilk test [@shapirowilk1965] compares the ordered residuals against the order statistics expected under normality; a small p-value rejects normality. Coefficient estimates remain unbiased under non-normality (Gauss--Markov does not require it), but small-sample hypothesis tests become unreliable.
 
@@ -265,7 +265,7 @@ When `data_type = "panel"`, `diag_lm` runs a four-stage decision workflow via th
 
 **Stage 2: fixed vs. random effects.** Conditional on panel effects being present, the choice between Fixed-Effects (within) and Random-Effects (GLS) hinges on whether the entity-specific effects correlate with the regressors. The Hausman test [@hausman1978] compares the two estimators,
 $$H = (\hat\beta_{FE} - \hat\beta_{RE})' \left[\widehat{\mathrm{Var}}(\hat\beta_{FE}) - \widehat{\mathrm{Var}}(\hat\beta_{RE})\right]^{-1} (\hat\beta_{FE} - \hat\beta_{RE}),$$
-asymptotically $\chi^2$ under the null that both are consistent (effects uncorrelated with the regressors, so Random Effects is valid and preferred for efficiency). `diag_lm` refits both a within and a random model internally, purely for this comparison. $p \geq 0.05$ recommends **Random Effects**; $p < 0.05$ recommends **Fixed Effects**. This internal comparison is always a one-way (entity-only) refit, regardless of whether the displayed model includes two-way (entity and time) effects; consequently, the Hausman recommendation shown alongside a two-way specification -- as in the rental-panel example in Section 6 -- evaluates the one-way comparison, not the two-way specification directly.
+asymptotically $\chi^2$ under the null that both are consistent (effects uncorrelated with the regressors, so Random Effects is valid and preferred for efficiency). `diag_lm` refits both a within and a random model internally, purely for this comparison. $p \geq 0.05$ recommends **Random Effects**; $p < 0.05$ recommends **Fixed Effects**. This internal comparison is always a one-way (entity-only) refit, regardless of whether the displayed model includes two-way (entity and time) effects; consequently, the Hausman recommendation shown alongside a two-way specification -- as in the rental-panel example in Section 5.1 -- evaluates the one-way comparison, not the two-way specification directly.
 
 **Stage 3: serial correlation in the panel residuals.** `diag_lm` also runs the panel Breusch--Godfrey/Wooldridge test [@godfrey1978] (`plm::pbgtest()`) on the fitted model's residuals. Its null is the absence of serial correlation; $p \geq 0.05$ is a genuine **PASS**, $p < 0.05$ a genuine **CHECK** -- unlike Stages 1, 2 and 4, a low p-value here signals an actual problem rather than pointing to a different estimator. A significant result means the reported standard errors are likely understated regardless of the Fixed/Random Effects choice above; the conventional remedy is clustering standard errors by the entity index, or, when the residual structure is highly persistent, moving to a dynamic panel specification (e.g. a lagged dependent variable).
 
@@ -307,7 +307,7 @@ linear_comparison_tbl[, 2:4] <- round(linear_comparison_tbl[, 2:4], 4)
 kable(linear_comparison_tbl, caption = "Linear model: diagnostic summary across baseline, injected heteroskedasticity and injected multicollinearity ($X_2 \\approx X_1$ plus noise)")
 ```
 
-```{r sim-linear-plot, fig.show='hold', out.width='49%', fig.cap="Residuals vs Fitted: baseline (left) shows no pattern; injected heteroskedasticity (right) shows the classic funnel shape, matching the collapsed Breusch-Pagan p-value in Table 4."}
+```{r sim-linear-plot, fig.show='hold', out.width='49%', fig.cap="Residuals vs Fitted: baseline (left) shows no pattern; injected heteroskedasticity (right) shows the classic funnel shape, matching the collapsed Breusch-Pagan p-value in Table 2."}
 print(plot(diag_base, type = "residuals"))
 print(plot(diag_het, type = "residuals"))
 ```
@@ -417,7 +417,7 @@ logit_comparison_tbl[, 2:4] <- round(logit_comparison_tbl[, 2:4], 4)
 kable(logit_comparison_tbl, caption = "Logistic model: diagnostic summary across baseline, an omitted quadratic term in $X_1$, and combined multicollinearity plus class imbalance (positive-class share $\\approx$ 10\\%)")
 ```
 
-```{r sim-logit-plot, echo=FALSE, fig.show='hold', out.width='49%', fig.cap="Binned residual plot: baseline (left) scatters randomly within the reference band; the omitted-nonlinearity scenario (right) shows systematic curvature, the graphical counterpart of the collapsed Hosmer-Lemeshow p-value in Table 5."}
+```{r sim-logit-plot, echo=FALSE, fig.show='hold', out.width='49%', fig.cap="Binned residual plot: baseline (left) scatters randomly within the reference band; the omitted-nonlinearity scenario (right) shows systematic curvature, the graphical counterpart of the collapsed Hosmer-Lemeshow p-value in Table 6."}
 print(plot(diag_lbase, type = "binned_residuals"))
 print(plot(diag_lnl, type = "binned_residuals"))
 ```
@@ -426,7 +426,7 @@ Hosmer--Lemeshow (null: correct specification) collapses only once the omitted q
 
 # App User Interface
 
-`App.R`'s dashboard is organised into three tabs corresponding to the input, output and transformation stages described in Section 2.4: **Setup** (Model Family, data source, data structure, variable-type editor), **Diagnostics** (fitted model, family- and structure-aware value boxes and plot grid, and the optional AI-assisted interpretation panel of Section 5.2), and **Transformation** (interaction-term construction and log/exp/square/standardise/log-return transforms). The screenshots below, captured live from a `shiny::runApp()` session, show the running application across the linear cross-sectional, logistic, time-series and panel pathways. Because they come from a separate interactive session rather than inline R code, the specific numeric values reported are illustrative and not guaranteed to reproduce exactly on a fresh run unless the same data source and seed are used; this caveat does not apply to the wage-data case study in Section 5, which is computed entirely inline and is fully reproducible.
+`app.R`'s dashboard is organised into three tabs corresponding to the input, output and transformation stages described in Section 2.4: **Setup** (Model Family, data source, data structure, variable-type editor), **Diagnostics** (fitted model, family- and structure-aware value boxes and plot grid, and the optional AI-assisted interpretation panel of Section 5.2), and **Transformation** (interaction-term construction and log/exp/square/standardise/log-return transforms). The screenshots below, captured live from a `shiny::runApp()` session, show the running application across the linear cross-sectional, logistic, time-series and panel pathways. Because they come from a separate interactive session rather than inline R code, the specific numeric values reported are illustrative and not guaranteed to reproduce exactly on a fresh run unless the same data source and seed are used; this caveat does not apply to the wage-data case study in Section 6, which is computed entirely inline and is fully reproducible.
 
 ## Shiny App Overview
 
@@ -437,14 +437,14 @@ knitr::include_graphics("figures/Setup_Tab.png")
 ```
 
 Diagnostics lets the user select outcome/predictor variables, optionally create interaction terms, and fit the model with Run Analysis; results populate the `diag_lm` object (Section 2.2) as reactive value boxes translating each test's statistic/p-value into a PASS/CHECK indicator using the thresholds given in Section 3.
-```{r app-diag-header-screenshots, echo=FALSE, fig.show='hold', out.width='100%', fig.cap="Diagnostics tab: fitted Regression and PASS indicators value box for each of the four core assumption checks."}
+```{r app-diag-header-screenshots, echo=FALSE, fig.show='hold', out.width='100%', fig.cap="Diagnostics tab: fitted Regresion and PASS indicators value box for each of the four core assumption checks."}
 knitr::include_graphics("figures/Diagnostic_Tab.png")
 ```
 
-```{r app-diag-plots-screenshot, echo=FALSE, out.width='100%', fig.cap="Diagnostics tab: the four standard diagnostic plots (Residuals vs Fitted, Normal Q-Q, Scale-Location, Residual Histogram) with AI Interpretation"}
+```{r app-diag-plots-screenshot, echo=FALSE, out.width='100%', fig.cap="Diagnostics tab: the four standard diagnostic plots (Residuals vs Fitted, Normal Q-Q, Scale-Location, Residual Histogram) with AI Intepretation"}
 knitr::include_graphics("figures/Plot_with_AIintepretation.png")
 ```
-Diagnostic plots visually verify core regression assumptions (Figure 6): the Residuals vs. Fitted plot assesses linearity (where a flat, patternless band indicates a good fit; correct via predictor transformations like log(x) or polynomial terms), the histogram and Normal Q-Q plot checks normality (points along the reference line; correct via outcome transformations, though large n is robust), and the Scale-Location plot assesses homoscedasticity, where heteroscedasticity marked by uneven spread is corrected using variance-stabilizing outcome transformations like log(y) or $\sqrt{y}$ .[@datanovia2026]
+Diagnostic plots visually verify core regression assumptions (Figure 6): the Residuals vs. Fitted plot assesses linearity (where a flat, patternless band indicates a good fit; correct via predictor transformations like log(x) or polynomial terms), the histogram and Normal Q-Q plot check normality (points along the reference line; correct via outcome transformations, though large n is robust), and the Scale-Location plot assesses homoskedasticity, where heteroskedasticity marked by uneven spread is corrected using variance-stabilising outcome transformations like log(y) or $\sqrt{y}$ [@datanovia2026].
 
 The screenshots below use simulated logistic data: all four diagnostics pass -- Hosmer--Lemeshow indicates adequate fit (p = 0.6121), the ROC curve shows good discrimination (AUC = 0.892), classification accuracy reaches 80.4% at the default 0.5 cutoff, and VIF confirms low multicollinearity (max VIF = 1.31); the binned residuals plot shows no systematic pattern and the calibration plot tracks the 45° reference line closely. As above, these values are illustrative rather than exactly reproducible.
 
@@ -457,7 +457,7 @@ The univariate time-series pathway (differenced S&P 500 index from `stock_indice
 knitr::include_graphics("figures/ValueBox_Univariate.png")
 knitr::include_graphics("figures/Plot_Univariate.png")
 ```
-For a two-way fixed-effects panel model (rental panel data, rent ~ pop + avginc + pctstu), the tab reports the within-estimator coefficient table alongside Hausman, Breusch--Pagan LM, and time-fixed-effects pFtest results as model-selection guidance. Consistent with Section 3.7, these three are shown as neutral blue recommendation boxes rather than PASS/CHECK indicators, while the panel Breusch--Godfrey and Shapiro--Wilk tests retain red/green coloring as genuine assumption checks.
+For a two-way fixed-effects panel model (rental panel data, rent ~ pop + avginc + pctstu), the tab reports the within-estimator coefficient table alongside Hausman, Breusch--Pagan LM, and time-fixed-effects pFtest results as model-selection guidance. Consistent with Section 3.7, these three are shown as neutral blue recommendation boxes rather than PASS/CHECK indicators, while the panel Breusch--Godfrey and Shapiro--Wilk tests retain red/green colouring as genuine assumption checks.
 ```{r app-panel-screenshots, echo=FALSE, fig.show='hold', out.width='100%', fig.cap="Diagnostics tab (Panel Data)."}
 knitr::include_graphics("figures/PanelModel.png")
 ```
@@ -590,7 +590,7 @@ if (violation_flagged) {
 
 ## Checking for a Nonlinear Experience Profile
 
-The Mincer-style literature typically expects a concave experience-wage relationship, returns that taper off and eventually decline, rather than the strictly linear relationship assumed above. The app's Transformation tab exposes a "Square" operator for exactly this reason (Section 6). We test this directly by adding a quadratic experience term to the baseline specification:
+The Mincer-style literature typically expects a concave experience-wage relationship, returns that taper off and eventually decline, rather than the strictly linear relationship assumed above. The app's Transformation tab exposes a "Square" operator for exactly this reason (Section 5.1). We test this directly by adding a quadratic experience term to the baseline specification:
 
 ```{r wage-quadratic}
 wage$experience_sq <- wage$experience^2
@@ -636,7 +636,7 @@ setwd(old_wd)
 
 The suite checks: (i) that `new_diag_lm()` returns an object of class `diag_lm` for a valid multi-predictor model; (ii) that `summary()` returns a `gt_tbl` object; (iii) that `plot()` returns a `ggplot` object for each supported `type`, and raises an informative error for an unsupported type; (iv) that VIF is correctly set to `NA` for a single-predictor model; (v) that the constructor rejects non-`lm`/`plm` input with an explicit error; (vi) for the logistic extension, that a binomial `glm` produces valid Hosmer--Lemeshow/AUC/McFadden $R^2$ diagnostics, a `gt_tbl` summary and working `binned_residuals`/`roc`/`calibration` plots; (vii) that those three logistic-only plot types raise an informative error on a non-logistic model; and (viii) that the time-series-only `residuals_time`/`pacf` plot types render correctly.
 
-## Shiny-Level Integration Tests of `App.R`
+## Shiny-Level Integration Tests of `app.R`
 
 Unit tests on `diag_lm` alone do not exercise the reactive graph that wires user input to model fitting and output rendering inside the `shiny` app. To close that gap, the application underwent a structured QA audit: the full server logic was mapped observer-by-observer and reactive-by-reactive, and every input path (model family switches, data upload vs. simulation, panel index selection, in-place type conversion) was checked against its downstream consumers. This audit surfaced eight concrete defects, all fixed in the current source (`app.R`):
 
@@ -691,7 +691,7 @@ setwd(old_wd)
 
 The nine tests cover, in order: (1) the default linear/cross-section flow; (2) an end-to-end logistic flow, including a working AUC computation; (3) a regression test reproducing defect 1 by switching Model Family from logistic to linear and force-evaluating the logistic-only outputs, confirming they now fail silently (`req()`'s intended behaviour) rather than erroring; (4) the time-series flow with its curated `residuals_time`/`pacf` plots; (5) an uploaded panel dataset, including a working Hausman test; (6) an uploaded CSV with awkward, non-syntactic original column names, confirming the `reformulate()`-based fix (defect 2) handles names as `read.csv()` sanitizes them; (7) a non-numeric outcome column, confirming defect 3's guard triggers; (8) blank panel index fields, confirming defect 4's guard triggers; and (9) an in-place type conversion targeting a column that no longer exists, confirming defect 5's guard prevents a session crash.
 
-Together with the simulation study (Section 4) and the applied case study (Section 5), this constitutes a four-tier validation strategy: unit-level (does the code do what it claims?), integration-level (does the app's reactive graph behave correctly under adversarial and edge-case input?), statistical (does it recover known ground truth for both model families?) and applied (does it behave sensibly on real, messy data?).
+Together with the simulation study (Section 4) and the applied case study (Section 6), this constitutes a four-tier validation strategy: unit-level (does the code do what it claims?), integration-level (does the app's reactive graph behave correctly under adversarial and edge-case input?), statistical (does it recover known ground truth for both model families?) and applied (does it behave sensibly on real, messy data?).
 
 # Discussion, Limitations and Future Work
 
@@ -699,13 +699,13 @@ Together with the simulation study (Section 4) and the applied case study (Secti
 
 **Residual-based unit-root testing remains indicative only** (Section 3.2), a limitation the univariate pathway (Section 3.6, validated in Section 4.3) does not share.
 
-**VIF and Shapiro--Wilk edge cases** VIF is undefined for a single predictor and guarded with `tryCatch()`, returning `NA` rather than a misleading value; Shapiro-Wilk will be replaced with Jarque-Bera Test for $n > 5000$) (Sections 3.3-3.4).
+**VIF and Shapiro--Wilk edge cases.** VIF is undefined for a single predictor and guarded with `tryCatch()`, returning `NA` rather than a misleading value; Shapiro--Wilk will be replaced with the Bera-Jarque Test for $n > 5000$ (Sections 3.3-3.4).
 
 **Panel-robust standard errors default to plain HC1.** When the heteroskedasticity-robust standard-error toggle is used on a panel (`plm`) fit without explicitly selecting a cluster variable, the app falls back to ordinary `sandwich::vcovHC()` rather than an entity-clustered variance estimator (e.g. `plm::vcovHC()`), the conventional default for panel data. Users working with panel data are advised to explicitly cluster by the entity index rather than relying on this default.
 
 **Logistic scope is cross-sectional only.** The current logistic extension supports `glm(family = binomial())` on cross-sectional data; panel logit (e.g. conditional or random-effects logit) and multinomial/ordinal outcomes are not yet supported, and would require separate estimation routines (e.g. via `pglm` or `nnet::multinom`) rather than a direct extension of the current `glm`-based pathway.
 
-**Univariate time-series scope is narrow.** `diag_lm_uni` diagnoses stationarity, autocorrelation, and normality of a series against its own history, but does not fit or select an actual time-series model, no ARIMA order selection and no GARCH-family volatility modeling.
+**Univariate time-series scope is narrow.** `diag_lm_uni` diagnoses stationarity, autocorrelation, and normality of a series against its own history, but does not fit or select an actual time-series model, no ARIMA order selection and no GARCH-family volatility modelling.
 
 **Separation heuristic is deliberately simple.** The current (quasi-)complete-separation flag checks only for implausibly large standard errors; a more rigorous implementation would test the Albert--Anderson [@albertanderson1984] conditions directly and automatically refit with Firth's correction [@firth1993] rather than only recommending it.
 
@@ -717,7 +717,7 @@ Together with the simulation study (Section 4) and the applied case study (Secti
 
 This project set out to meet the four objectives stated in Section 1.2, and each has been addressed. The diagnostic logic was encapsulated in a single, well-tested S3 class, `diag_lm`, that separates statistical computation from presentation via the classic `print`/`summary`/`plot` idiom (Section 2). The framework was extended beyond the linear model to binomial logistic regression and univariate time-series stationarity checking, each equipped with its own dedicated toolkit of tests rather than a forced reuse of the linear-model diagnostics (Sections 3.5--3.6). An interactive `shiny` front end was built so that a non-technical user can simulate data with known violations or upload their own and immediately see a display curated to the chosen model family and data structure (Sections 2.4 and 5). Finally, the implementation was validated, not asserted, through the four-tier strategy of Section 7: unit tests of the statistical computations, integration tests of the app's reactive graph, a controlled simulation study, and an applied case study.
 
-The evidence from this validation is consistent across these validation components. The simulation study (Section 4) showed that each test responds selectively to the specific violation it was built to detect and remains stable otherwise, including the univariate ADF pathway validated directly against a known stationary series and a genuine random walk (Section 4.3). The wage-data case study (Section 6) showed the framework behaving sensibly on real, unmanipulated data: the diagnostics flagged genuine heteroskedasticity and non-normality that a simple log transform did not resolve, and the coefficient estimates matched expected labour-economics patterns, a face-validity check no automated test can substitute for. The Shiny-level QA audit (Section 7.2) further surfaced and fixed eight concrete defects in the reactive graph, defects that unit tests on `diag_lm` alone would not have caught.
+The evidence from this validation is consistent across all three components. The simulation study (Section 4) showed that each test responds selectively to the specific violation it was built to detect and remains stable otherwise, including the univariate ADF pathway validated directly against a known stationary series and a genuine random walk (Section 4.3). The wage-data case study (Section 6) showed the framework behaving sensibly on real, unmanipulated data: the diagnostics flagged genuine heteroskedasticity and non-normality that a simple log transform did not resolve, and the coefficient estimates matched expected labour-economics patterns, a face-validity check no automated test can substitute for. The Shiny-level QA audit (Section 7.2) further surfaced and fixed eight concrete defects in the reactive graph, defects that unit tests on `diag_lm` alone would not have caught.
 
 These results should be read alongside the limitations discussed in Section 8. The framework relies on asymptotic test approximations, treats residual-based unit-root testing as indicative only, defaults to non-clustered standard errors for panel data unless the user intervenes, and covers only cross-sectional logistic and univariate time-series models rather than their panel or multinomial extensions. None of these limitations invalidate the diagnostics reported here, but they mark the boundaries within which the tool's output should be interpreted, and they define a concrete agenda, formal packaging chief among it, for extending the work.
 
@@ -760,7 +760,7 @@ vars_tbl <- data.frame(
     "Second simulated predictor, optionally made collinear with X1 to inject multicollinearity",
     "Time index (1..n) attached to the simulated time-series observations",
     "Cross-sectional (entity) identifier generated by simulate_panel_data(), used in the panel example in Section 4.4",
-    "Time-period identifier generated by simulate_panel_data(), used in the panel example in Section 4.3"
+    "Time-period identifier generated by simulate_panel_data(), used in the panel example in Section 4.4"
   )
 )
 kbl(vars_tbl, caption = "Description of relevant variables",

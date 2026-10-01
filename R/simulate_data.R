@@ -113,14 +113,12 @@ simulate_ts_data <- function(n = 500, heteroskedastic = FALSE,
   }
   
   # Error process: random walk (unit root) or stationary AR(1).
- e <- numeric(n)
-e[1] <- innov[1]
-effective_phi <- if (unit_root) 1 else phi
-if (n > 1) {
+  e <- numeric(n)
+  e[1] <- innov[1]
+  effective_phi <- if (unit_root) 1 else phi
   for (i in 2:n) {
     e[i] <- effective_phi * e[i - 1] + innov[i]
   }
-}
   
   Y <- 10 + (2.5 * X1) - (1.5 * X2) + e
   
@@ -251,12 +249,10 @@ simulate_panel_data <- function(n_entities = 30, n_periods = 8,
       }
       ei <- numeric(n_periods)
       ei[1] <- innov[1]
-      if (n_periods > 1) {
       for (tt in 2:n_periods) {
-      ei[tt] <- 0.6 * ei[tt - 1] + innov[tt]
-  }
-}
-e[idx] <- ei
+        ei[tt] <- 0.6 * ei[tt - 1] + innov[tt]
+      }
+      e[idx] <- ei
     }
   } else if (heteroskedastic) {
     e <- rnorm(n, mean = 0, sd = 1 + 0.5 * abs(X - mean(X)))
