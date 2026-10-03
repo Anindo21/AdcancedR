@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>diag_lm: Interactive Regression Diagnostics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400..700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+*{margin:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#DDE5EF}
+#stage{position:fixed;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center center;box-shadow:0 20px 60px rgba(15,27,51,.18)}
+#stage>section{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility 0s linear .45s}
+#stage>section.active{opacity:1;visibility:visible;transition:opacity .45s ease}
+h1,h2,h3,p{font-weight:inherit}h1,h2,h3{font-weight:600}
+.icon svg{width:100%;height:100%;display:block}
+#hint{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);font:14px/1.4 'IBM Plex Sans',Arial,sans-serif;color:#33415C;background:rgba(255,255,255,.85);padding:8px 16px;border-radius:999px;box-shadow:0 4px 16px rgba(15,27,51,.12);transition:opacity .6s;pointer-events:none}
+#nav{position:fixed;right:18px;bottom:18px;display:flex;gap:8px}
+#nav button{font:600 18px/1 Arial,sans-serif;width:40px;height:40px;border-radius:50%;border:1px solid #C7D3E3;background:rgba(255,255,255,.9);color:#0F1B33;cursor:pointer}
+#nav button:hover{background:#fff}
+:fullscreen #nav,:fullscreen #hint{display:none}
+</style>
+</head>
+<body>
+<div id="stage">
+<section id="cover" style="background:radial-gradient(ellipse at 75% 45%, #D6E7FA 0%, #F7F9FC 64%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:32px">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.06) 0px, rgba(8,119,168,0.06) 1px, transparent 1px, transparent 96px)"></div>
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(0deg, rgba(8,119,168,0.06) 0px, rgba(8,119,168,0.06) 1px, transparent 1px, transparent 96px)"></div>
+<iframe class="embed" style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;border:0" sandbox="allow-scripts" title="animation" data-src="&lt;!doctype html&gt;&lt;html&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;/head&gt;&lt;body style=&quot;margin:0;background:transparent;overflow:hidden&quot;&gt;&lt;canvas id=&quot;c&quot; width=&quot;1920&quot; height=&quot;1080&quot; style=&quot;width:100vw;height:100vh;display:block&quot;&gt;&lt;/canvas&gt;&lt;script&gt;
+const c=document.getElementById(&#x27;c&#x27;),x=c.getContext(&#x27;2d&#x27;),W=1920,H=1080;
+const x0=1020,y0=880,x1=1760,y1=400;
+const pts=[];for(let i=0;i&lt;64;i++){const u=Math.random();const px=x0+u*(x1-x0);const fy=y0+(y1-y0)*u;pts.push({px,fy,off:(Math.random()-.5)*(50+u*220),ph:Math.random()*6.28,r:3+Math.random()*3});}
+const dust=[];for(let i=0;i&lt;110;i++)dust.push({x:Math.random()*W,y:Math.random()*H,v:.15+Math.random()*.5,a:Math.random()*6});
+function frame(t){x.clearRect(0,0,W,H);
+for(const d of dust){d.y-=d.v;if(d.y&lt;0){d.y=H;d.x=Math.random()*W;}x.fillStyle=&#x27;rgba(8,119,168,&#x27;+(0.12+0.22*Math.abs(Math.sin(t/1100+d.a)))+&#x27;)&#x27;;x.fillRect(d.x,d.y,2,2);}
+const cyc=t%10000,k=Math.min(1,cyc/2600),scan=x0-80+((cyc/10000)*(x1-x0+160));
+x.save();x.strokeStyle=&#x27;rgba(108,92,231,0.95)&#x27;;x.lineWidth=4;x.shadowColor=&#x27;#6C5CE7&#x27;;x.shadowBlur=28;x.beginPath();x.moveTo(x0,y0);x.lineTo(x0+(x1-x0)*k,y0+(y1-y0)*k);x.stroke();x.restore();
+for(const p of pts){const yy=p.fy+p.off+Math.sin(t/1300+p.ph)*5;const near=Math.abs(p.px-scan)&lt;46;
+if(k&gt;=1){x.strokeStyle=near?&#x27;rgba(224,122,46,0.95)&#x27;:&#x27;rgba(8,119,168,0.16)&#x27;;x.lineWidth=near?3:2;x.beginPath();x.moveTo(p.px,yy);x.lineTo(p.px,p.fy);x.stroke();}
+x.save();x.fillStyle=near?&#x27;#D9641C&#x27;:&#x27;#0877A8&#x27;;x.shadowColor=near?&#x27;#D9641C&#x27;:&#x27;#0877A8&#x27;;x.shadowBlur=near?22:10;x.beginPath();x.arc(p.px,yy,near?p.r+2:p.r,0,6.283);x.fill();x.restore();}
+const g=x.createLinearGradient(scan-70,0,scan+70,0);g.addColorStop(0,&#x27;rgba(8,119,168,0)&#x27;);g.addColorStop(.5,&#x27;rgba(8,119,168,0.16)&#x27;);g.addColorStop(1,&#x27;rgba(8,119,168,0)&#x27;);x.fillStyle=g;x.fillRect(scan-70,200,140,740);
+requestAnimationFrame(frame);}
+requestAnimationFrame(frame);
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;"></iframe>
+<div style="position:absolute;right:128px;top:96px;width:300px;height:124px;background:#FFFFFF;border-radius:20px;padding:12px 18px;display:flex;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(8,119,168,0.25)"><img src="assets/ude_logo.png" alt="University of Duisburg-Essen logo" style="width:264px;height:100px;object-fit:contain"></div>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;text-transform:uppercase;color:#0877A8">Advanced R for Econometricians · University of Duisburg-Essen</p>
+<h1 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:200px;font-weight:700;line-height:1;letter-spacing:-6px;width:900px;background:linear-gradient(90deg, #0F1B33 0%, #0877A8 55%, #6C5CE7 100%);background-clip:text;-webkit-text-fill-color:transparent">diag_lm</h1>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:52px;font-weight:500;line-height:1.15;width:860px;color:#0F1B33">Interactive diagnostics for linear, logistic, time-series and panel models</h2>
+<p style="font-size:30px;color:#33415C;width:900px">Rezaul Hoque · Sarah Al-Talal · Thi Hong Cam Nguyen</p>
+<p style="font-size:24px;color:#5E6B85;width:900px">Supervisors: Dr. Martin C. Arnold · M.Sc. Martin Schmelzer · 08.10.2026</p>
+
+</section>
+<section id="agenda" style="background:radial-gradient(ellipse at 90% 0%, #DCEAFB 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(0deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;text-transform:uppercase;color:#0877A8">Agenda</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#0F1B33">What we will cover</h2>
+</div>
+<div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:32px">
+<div style="background:#FFFFFF;border:1px solid rgba(8,119,168,0.22);border-radius:24px;padding:48px 40px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:16px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:64px;font-weight:600;color:#0877A8">01</p><p style="font-size:34px;line-height:1.3;color:#0F1B33">Motivation and our approach</p></div>
+<div style="background:#FFFFFF;border:1px solid rgba(8,119,168,0.22);border-radius:24px;padding:48px 40px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:16px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:64px;font-weight:600;color:#0877A8">02</p><p style="font-size:34px;line-height:1.3;color:#0F1B33">Course concepts we applied</p></div>
+<div style="background:#FFFFFF;border:1px solid rgba(8,119,168,0.22);border-radius:24px;padding:48px 40px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:16px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:64px;font-weight:600;color:#0877A8">03</p><p style="font-size:34px;line-height:1.3;color:#0F1B33">Model-specific diagnostics</p></div>
+<div style="background:#FFFFFF;border:1px solid rgba(8,119,168,0.22);border-radius:24px;padding:48px 40px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:16px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:64px;font-weight:600;color:#0877A8">04</p><p style="font-size:34px;line-height:1.3;color:#0F1B33">Validation with simulated data</p></div>
+<div style="background:#FFFFFF;border:1px solid rgba(108,92,231,0.3);border-radius:24px;padding:48px 40px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:16px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:64px;font-weight:600;color:#6C5CE7">05</p><p style="font-size:34px;line-height:1.3;color:#0F1B33">Live demo and AI interpretation</p></div>
+<div style="background:#FFFFFF;border:1px solid rgba(108,92,231,0.3);border-radius:24px;padding:48px 40px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:16px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:64px;font-weight:600;color:#6C5CE7">06</p><p style="font-size:34px;line-height:1.3;color:#0F1B33">Case study: hourly wages</p></div>
+<div style="background:#FFFFFF;border:1px solid rgba(108,92,231,0.3);border-radius:24px;padding:48px 40px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:16px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:64px;font-weight:600;color:#6C5CE7">07</p><p style="font-size:34px;line-height:1.3;color:#0F1B33">Testing and quality assurance</p></div>
+<div style="background:#FFFFFF;border:1px solid rgba(108,92,231,0.3);border-radius:24px;padding:48px 40px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:16px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:64px;font-weight:600;color:#6C5CE7">08</p><p style="font-size:34px;line-height:1.3;color:#0F1B33">Limitations, future work, conclusion</p></div>
+</div>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">02 / 20</p>
+
+</section>
+<section id="motivation" style="background:radial-gradient(ellipse at 90% 0%, #DCEAFB 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px;justify-content:space-between">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(0deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;text-transform:uppercase;color:#0877A8">01 / Motivation</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#0F1B33">Why model diagnostics matter</h2>
+</div>
+<div style="display:flex;gap:32px">
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(224,122,46,0.35);border-radius:24px;padding:40px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:20px">
+<span class="icon" style="color:#D9641C;width:64px;height:64px;display:inline-block;flex:none" aria-hidden="true"><svg stroke="currentColor" fill="none" stroke-width="1.75" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg></span>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:40px;font-weight:600;color:#0F1B33">Assumptions break</h3>
+<p style="font-size:28px;line-height:1.45;color:#4A5872">Heteroskedasticity, serial correlation, non-normality and multicollinearity can make standard errors and p-values unreliable.</p>
+</div>
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(8,119,168,0.22);border-radius:24px;padding:40px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:20px">
+<span class="icon" style="color:#0877A8;width:64px;height:64px;display:inline-block;flex:none" aria-hidden="true"><svg stroke="currentColor" fill="none" stroke-width="1.75" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M3 3v16a2 2 0 0 0 2 2h16"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg></span>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:40px;font-weight:600;color:#0F1B33">Models differ</h3>
+<p style="font-size:28px;line-height:1.45;color:#4A5872">Linear, logistic, time-series and panel models each need their own set of checks.</p>
+</div>
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(108,92,231,0.3);border-radius:24px;padding:40px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:20px">
+<span class="icon" style="color:#6C5CE7;width:64px;height:64px;display:inline-block;flex:none" aria-hidden="true"><svg stroke="currentColor" fill="none" stroke-width="1.75" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:40px;font-weight:600;color:#0F1B33">Manual work</h3>
+<p style="font-size:28px;line-height:1.45;color:#4A5872">Running every test by hand for every model is slow and easy to get wrong.</p>
+</div>
+</div>
+<p style="font-size:32px;line-height:1.4;color:#0F1B33;background:rgba(8,119,168,0.08);border:1px solid rgba(8,119,168,0.35);border-radius:20px;padding:24px 36px"><span style="color:#0877A8"><b>Our goal:</b></span> one tool that runs the right checks for each model, in R and in a Shiny app.</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">03 / 20</p>
+
+</section>
+<section id="approach" style="background:radial-gradient(ellipse at 90% 0%, #DCEAFB 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px;justify-content:space-between">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(0deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;text-transform:uppercase;color:#0877A8">01 / Approach</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#0F1B33">Our approach in four steps</h2>
+</div>
+<div style="display:flex;gap:12px;align-items:stretch">
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(8,119,168,0.22);border-radius:24px;padding:32px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:16px">
+<span class="icon" style="color:#0877A8;width:56px;height:56px;display:inline-block;flex:none" aria-hidden="true"><svg stroke="currentColor" fill="none" stroke-width="1.75" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg></span>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:36px;font-weight:600;color:#0F1B33">Engine</h3>
+<p style="font-size:26px;line-height:1.4;color:#4A5872">One S3 class, diag_lm, runs the right tests and plots for each model.</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#0877A8">lm · glm · plm</p>
+</div>
+<span style="width:44px;height:0px;color:#0877A8;border-width:3px;align-self:center;display:block;flex:none;height:0px;border-top:3px solid #0877A8;position:relative"><span style="position:absolute;right:-2px;top:-9px;width:0;height:0;border-left:14px solid #0877A8;border-top:7.5px solid transparent;border-bottom:7.5px solid transparent"></span></span>
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(8,119,168,0.22);border-radius:24px;padding:32px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:16px">
+<span class="icon" style="color:#0877A8;width:56px;height:56px;display:inline-block;flex:none" aria-hidden="true"><svg stroke="currentColor" fill="none" stroke-width="1.75" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg></span>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:36px;font-weight:600;color:#0F1B33">Shiny app</h3>
+<p style="font-size:26px;line-height:1.4;color:#4A5872">Load or simulate data, pick a model, see each test as PASS or CHECK.</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#0877A8">3 tabs</p>
+</div>
+<span style="width:44px;height:0px;color:#0877A8;border-width:3px;align-self:center;display:block;flex:none;height:0px;border-top:3px solid #0877A8;position:relative"><span style="position:absolute;right:-2px;top:-9px;width:0;height:0;border-left:14px solid #0877A8;border-top:7.5px solid transparent;border-bottom:7.5px solid transparent"></span></span>
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(8,119,168,0.22);border-radius:24px;padding:32px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:16px">
+<span class="icon" style="color:#0877A8;width:56px;height:56px;display:inline-block;flex:none" aria-hidden="true"><svg stroke="currentColor" fill="none" stroke-width="1.75" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"></path><path d="m9 12 2 2 4-4"></path></svg></span>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:36px;font-weight:600;color:#0F1B33">Validation</h3>
+<p style="font-size:26px;line-height:1.4;color:#4A5872">Simulate data with a known problem and check that diag_lm finds it.</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#0877A8">+ automated tests</p>
+</div>
+<span style="width:44px;height:0px;color:#6C5CE7;border-width:3px;align-self:center;display:block;flex:none;height:0px;border-top:3px solid #6C5CE7;position:relative"><span style="position:absolute;right:-2px;top:-9px;width:0;height:0;border-left:14px solid #6C5CE7;border-top:7.5px solid transparent;border-bottom:7.5px solid transparent"></span></span>
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(108,92,231,0.3);border-radius:24px;padding:32px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:16px">
+<span class="icon" style="color:#6C5CE7;width:56px;height:56px;display:inline-block;flex:none" aria-hidden="true"><svg stroke="currentColor" fill="none" stroke-width="1.75" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"></path><path d="M9 18h6"></path><path d="M10 22h4"></path></svg></span>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:36px;font-weight:600;color:#0F1B33">AI layer</h3>
+<p style="font-size:26px;line-height:1.4;color:#4A5872">An optional LLM explains the computed results in plain language.</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#6C5CE7">opt-in</p>
+</div>
+</div>
+<p style="font-size:30px;line-height:1.4;color:#33415C"><span style="color:#D9641C"><b>Problem:</b></span> checking assumptions by hand for every model is slow and error-prone. <span style="color:#0877A8"><b>Idea:</b></span> put all checks into one reusable tool.</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">04 / 20</p>
+
+</section>
+<section id="concepts" style="background:radial-gradient(ellipse at 90% 0%, #DCEAFB 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px;justify-content:space-between">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(0deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;text-transform:uppercase;color:#0877A8">02 / Course concepts</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#0F1B33">Course concepts we applied</h2>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:24px">
+<div style="background:#FFFFFF;border:1px solid rgba(8,119,168,0.22);border-radius:24px;padding:32px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;gap:16px;align-items:center"><span class="icon" style="color:#0877A8;width:44px;height:44px;display:inline-block;flex:none" aria-hidden="true"><svg stroke="currentColor" fill="none" stroke-width="1.75" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg></span><h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:32px;font-weight:600;color:#0F1B33">Object-oriented (S3)</h3></div>
+<p style="font-size:24px;line-height:1.45;color:#4A5872">Each model needs different tests → one class; <span style="color:#0877A8">summary()</span> and <span style="color:#0877A8">plot()</span> adapt to the model.</p>
+</div>
+<div style="background:#FFFFFF;border:1px solid rgba(8,119,168,0.22);border-radius:24px;padding:32px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;gap:16px;align-items:center"><span class="icon" style="color:#0877A8;width:44px;height:44px;display:inline-block;flex:none" aria-hidden="true"><svg stroke="currentColor" fill="none" stroke-width="1.75" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg></span><h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:32px;font-weight:600;color:#0F1B33">Functional programming</h3></div>
+<p style="font-size:24px;line-height:1.45;color:#4A5872">The same step for many columns, tests and plots → small reusable functions with <span style="color:#0877A8">lapply()</span>.</p>
+</div>
+<div style="background:#FFFFFF;border:1px solid rgba(8,119,168,0.22);border-radius:24px;padding:32px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;gap:16px;align-items:center"><span class="icon" style="color:#0877A8;width:44px;height:44px;display:inline-block;flex:none" aria-hidden="true"><svg stroke="currentColor" fill="none" stroke-width="1.75" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path></svg></span><h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:32px;font-weight:600;color:#0F1B33">Shiny reactivity</h3></div>
+<p style="font-size:24px;line-height:1.45;color:#4A5872">No refit on every change → <span style="color:#0877A8">eventReactive()</span> waits for a button click; <span style="color:#0877A8">req()</span> waits for complete input.</p>
+</div>
+<div style="background:#FFFFFF;border:1px solid rgba(108,92,231,0.3);border-radius:24px;padding:32px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;gap:16px;align-items:center"><span class="icon" style="color:#6C5CE7;width:44px;height:44px;display:inline-block;flex:none" aria-hidden="true"><svg stroke="currentColor" fill="none" stroke-width="1.75" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg></span><h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:32px;font-weight:600;color:#0F1B33">Defensive code</h3></div>
+<p style="font-size:24px;line-height:1.45;color:#4A5872">A failing test or messy CSV crashed the app → <span style="color:#6C5CE7">tryCatch()</span> returns NA; <span style="color:#6C5CE7">validate()</span> shows a clear message.</p>
+</div>
+<div style="background:#FFFFFF;border:1px solid rgba(108,92,231,0.3);border-radius:24px;padding:32px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;gap:16px;align-items:center"><span class="icon" style="color:#6C5CE7;width:44px;height:44px;display:inline-block;flex:none" aria-hidden="true"><svg stroke="currentColor" fill="none" stroke-width="1.75" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M3 3v16a2 2 0 0 0 2 2h16"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg></span><h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:32px;font-weight:600;color:#0F1B33">ggplot2 and gt</h3></div>
+<p style="font-size:24px;line-height:1.45;color:#4A5872">Results must read at a glance → every diagnostic plot is a ggplot, every summary a gt table.</p>
+</div>
+<div style="background:#FFFFFF;border:1px solid rgba(108,92,231,0.3);border-radius:24px;padding:32px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;gap:16px;align-items:center"><span class="icon" style="color:#6C5CE7;width:44px;height:44px;display:inline-block;flex:none" aria-hidden="true"><svg stroke="currentColor" fill="none" stroke-width="1.75" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span><h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:32px;font-weight:600;color:#0F1B33">GenAI with ellmer</h3></div>
+<p style="font-size:24px;line-height:1.45;color:#4A5872">p-values are hard for non-experts → ellmer + Groq explain the computed results; no raw data is sent.</p>
+</div>
+</div>
+<p style="font-size:26px;color:#5E6B85">Also applied: <span style="color:#33415C">R Markdown</span> (the report runs our tests) · <span style="color:#33415C">Git and GitHub</span> (version control)</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">05 / 20</p>
+
+</section>
+<section id="diagnostics" style="background:radial-gradient(ellipse at 90% 0%, #DCEAFB 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(0deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;text-transform:uppercase;color:#0877A8">03 / Diagnostics</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#0F1B33">Different models need different diagnostics</h2>
+</div>
+<div style="display:flex;gap:24px">
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(8,119,168,0.22);border-radius:24px;padding:32px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;gap:16px;align-items:center"><span class="icon" style="color:#0877A8;width:44px;height:44px;display:inline-block;flex:none" aria-hidden="true"><svg stroke="currentColor" fill="none" stroke-width="1.75" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M3 3v16a2 2 0 0 0 2 2h16"></path><path d="M18 17V9"></path><path d="M13 17V5"></path><path d="M8 17v-3"></path></svg></span><h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:34px;font-weight:600;color:#0F1B33">Linear</h3></div>
+<p style="font-size:26px;line-height:1.35;color:#4A5872"><b><span style="color:#0F1B33">Breusch–Pagan</span></b><br>constant variance</p>
+<p style="font-size:26px;line-height:1.35;color:#4A5872"><b><span style="color:#0F1B33">Durbin–Watson</span></b><br>autocorrelation</p>
+<p style="font-size:26px;line-height:1.35;color:#4A5872"><b><span style="color:#0F1B33">Shapiro–Wilk / JB</span></b><br>normality (JB if n &gt; 5000)</p>
+<p style="font-size:26px;line-height:1.35;color:#4A5872"><b><span style="color:#0F1B33">VIF</span></b><br>multicollinearity</p>
+</div>
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(8,119,168,0.22);border-radius:24px;padding:32px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;gap:16px;align-items:center"><span class="icon" style="color:#0877A8;width:44px;height:44px;display:inline-block;flex:none" aria-hidden="true"><svg stroke="currentColor" fill="none" stroke-width="1.75" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg></span><h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:34px;font-weight:600;color:#0F1B33">Logistic</h3></div>
+<p style="font-size:26px;line-height:1.35;color:#4A5872"><b><span style="color:#0F1B33">Hosmer–Lemeshow</span></b><br>goodness of fit</p>
+<p style="font-size:26px;line-height:1.35;color:#4A5872"><b><span style="color:#0F1B33">ROC / AUC</span></b><br>discrimination</p>
+<p style="font-size:26px;line-height:1.35;color:#4A5872"><b><span style="color:#0F1B33">Calibration</span></b><br>predicted vs observed</p>
+<p style="font-size:26px;line-height:1.35;color:#4A5872"><b><span style="color:#0F1B33">VIF</span></b><br>multicollinearity</p>
+</div>
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(108,92,231,0.3);border-radius:24px;padding:32px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;gap:16px;align-items:center"><span class="icon" style="color:#6C5CE7;width:44px;height:44px;display:inline-block;flex:none" aria-hidden="true"><svg stroke="currentColor" fill="none" stroke-width="1.75" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"></path></svg></span><h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:34px;font-weight:600;color:#0F1B33">Time series</h3></div>
+<p style="font-size:26px;line-height:1.35;color:#4A5872"><b><span style="color:#0F1B33">ADF</span></b><br>unit roots</p>
+<p style="font-size:26px;line-height:1.35;color:#4A5872"><b><span style="color:#0F1B33">BG / Ljung–Box</span></b><br>serial correlation</p>
+<p style="font-size:26px;line-height:1.35;color:#4A5872"><b><span style="color:#0F1B33">ACF / PACF</span></b><br>lag structure</p>
+<p style="font-size:26px;line-height:1.35;color:#4A5872"><b><span style="color:#0F1B33">Jarque–Bera</span></b><br>normality</p>
+</div>
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(108,92,231,0.3);border-radius:24px;padding:32px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;gap:16px;align-items:center"><span class="icon" style="color:#6C5CE7;width:44px;height:44px;display:inline-block;flex:none" aria-hidden="true"><svg stroke="currentColor" fill="none" stroke-width="1.75" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span><h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:34px;font-weight:600;color:#0F1B33">Panel</h3></div>
+<p style="font-size:26px;line-height:1.35;color:#4A5872"><b><span style="color:#0F1B33">Panel LM</span></b><br>pooled vs panel</p>
+<p style="font-size:26px;line-height:1.35;color:#4A5872"><b><span style="color:#0F1B33">Hausman</span></b><br>fixed vs random effects</p>
+<p style="font-size:26px;line-height:1.35;color:#4A5872"><b><span style="color:#0F1B33">Panel BG</span></b><br>serial correlation</p>
+<p style="font-size:26px;line-height:1.35;color:#4A5872"><b><span style="color:#0F1B33">F-test</span></b><br>time effects</p>
+</div>
+</div>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">06 / 20</p>
+
+</section>
+<section id="validation" style="background:radial-gradient(ellipse at 90% 0%, #DCEAFB 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:56px;justify-content:space-between">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(0deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;text-transform:uppercase;color:#0877A8">04 / Validation</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#0F1B33">Validation with known ground truth</h2>
+</div>
+<div style="display:flex;gap:12px;align-items:flex-start">
+<div style="flex:1;display:flex;flex-direction:column;gap:20px">
+<div style="width:112px;height:112px;border-radius:50%;border:2px solid #0877A8;box-shadow:0 0 32px rgba(8,119,168,0.35);display:flex;align-items:center;justify-content:center"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:36px;font-weight:600;color:#0877A8">01</p></div>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:40px;font-weight:600;color:#0F1B33">Baseline</h3>
+<p style="font-size:28px;line-height:1.4;color:#4A5872">Clean data, no violations</p>
+</div>
+<div style="padding-top:55px"><span style="width:56px;height:0px;color:#0877A8;border-width:3px;display:block;flex:none;height:0px;border-top:3px solid #0877A8;position:relative"><span style="position:absolute;right:-2px;top:-9px;width:0;height:0;border-left:14px solid #0877A8;border-top:7.5px solid transparent;border-bottom:7.5px solid transparent"></span></span></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:20px">
+<div style="width:112px;height:112px;border-radius:50%;border:2px solid #D9641C;box-shadow:0 0 32px rgba(224,122,46,0.35);display:flex;align-items:center;justify-content:center"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:36px;font-weight:600;color:#D9641C">02</p></div>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:40px;font-weight:600;color:#0F1B33">Inject</h3>
+<p style="font-size:28px;line-height:1.4;color:#4A5872">Break one assumption on purpose</p>
+</div>
+<div style="padding-top:55px"><span style="width:56px;height:0px;color:#0877A8;border-width:3px;display:block;flex:none;height:0px;border-top:3px solid #0877A8;position:relative"><span style="position:absolute;right:-2px;top:-9px;width:0;height:0;border-left:14px solid #0877A8;border-top:7.5px solid transparent;border-bottom:7.5px solid transparent"></span></span></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:20px">
+<div style="width:112px;height:112px;border-radius:50%;border:2px solid #0877A8;box-shadow:0 0 32px rgba(8,119,168,0.35);display:flex;align-items:center;justify-content:center"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:36px;font-weight:600;color:#0877A8">03</p></div>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:40px;font-weight:600;color:#0F1B33">Diagnose</h3>
+<p style="font-size:28px;line-height:1.4;color:#4A5872">Run diag_lm on the simulated data</p>
+</div>
+<div style="padding-top:55px"><span style="width:56px;height:0px;color:#6C5CE7;border-width:3px;display:block;flex:none;height:0px;border-top:3px solid #6C5CE7;position:relative"><span style="position:absolute;right:-2px;top:-9px;width:0;height:0;border-left:14px solid #6C5CE7;border-top:7.5px solid transparent;border-bottom:7.5px solid transparent"></span></span></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:20px">
+<div style="width:112px;height:112px;border-radius:50%;border:2px solid #6C5CE7;box-shadow:0 0 32px rgba(108,92,231,0.35);display:flex;align-items:center;justify-content:center"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:36px;font-weight:600;color:#6C5CE7">04</p></div>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:40px;font-weight:600;color:#0F1B33">Check</h3>
+<p style="font-size:28px;line-height:1.4;color:#4A5872">Did diag_lm flag the problem we built in?</p>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:20px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:3px;text-transform:uppercase;color:#5E6B85">Problems we injected</p>
+<div style="display:flex;flex-wrap:wrap;gap:16px">
+<p style="font-size:28px;color:#0F1B33;background:rgba(8,119,168,0.08);border:1px solid rgba(8,119,168,0.4);border-radius:40px;padding:12px 28px">Heteroskedasticity</p>
+<p style="font-size:28px;color:#0F1B33;background:rgba(8,119,168,0.08);border:1px solid rgba(8,119,168,0.4);border-radius:40px;padding:12px 28px">Multicollinearity</p>
+<p style="font-size:28px;color:#0F1B33;background:rgba(8,119,168,0.08);border:1px solid rgba(8,119,168,0.4);border-radius:40px;padding:12px 28px">AR(1) serial correlation</p>
+<p style="font-size:28px;color:#0F1B33;background:rgba(108,92,231,0.1);border:1px solid rgba(108,92,231,0.45);border-radius:40px;padding:12px 28px">Unit root</p>
+<p style="font-size:28px;color:#0F1B33;background:rgba(108,92,231,0.1);border:1px solid rgba(108,92,231,0.45);border-radius:40px;padding:12px 28px">Correlated panel effects</p>
+<p style="font-size:28px;color:#0F1B33;background:rgba(108,92,231,0.1);border:1px solid rgba(108,92,231,0.45);border-radius:40px;padding:12px 28px">Omitted non-linearity (logistic)</p>
+</div>
+</div>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">07 / 20</p>
+
+</section>
+<section id="res-linear" style="background:radial-gradient(ellipse at 90% 0%, #DCEAFB 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px;justify-content:space-between">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(0deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;text-transform:uppercase;color:#0877A8">04 / Results · Linear (n = 400)</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#0F1B33">Heteroskedasticity is caught</h2>
+</div>
+<div style="display:flex;gap:48px;align-items:flex-start">
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="background:#FFFFFF;border-radius:20px;padding:16px;box-shadow:0 0 60px rgba(8,119,168,0.18)"><img src="assets/linear_resid.jpg" alt="Residuals vs fitted: random scatter in the baseline, a funnel shape with injected heteroskedasticity" style="width:1008px;height:350px;object-fit:contain"></div>
+<p style="font-size:24px;color:#4A5872;width:1040px">Residuals vs fitted: random scatter (baseline, left) vs a funnel (injected, right)</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:4px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">Baseline · Breusch–Pagan</p><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;color:#0877A8">p = 0.486</p></div>
+<div style="display:flex;flex-direction:column;gap:4px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">Injected · Breusch–Pagan</p><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;color:#D9641C">p ≈ 0 · CHECK</p></div>
+<div style="display:flex;flex-direction:column;gap:4px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">Collinear X₂ ≈ X₁ · max VIF</p><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;color:#6C5CE7">15.68</p></div>
+</div>
+</div>
+<p style="font-size:28px;line-height:1.4;color:#33415C">Note: Shapiro–Wilk also rejects under heteroskedasticity (p = 0.003), because unequal variance makes the tails heavier.</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">08 / 20</p>
+
+</section>
+<section id="res-ts" style="background:radial-gradient(ellipse at 90% 0%, #DCEAFB 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px;justify-content:space-between">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(0deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;text-transform:uppercase;color:#0877A8">04 / Results · Time series (φ = 0.6, n = 300)</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#0F1B33">Serial correlation is caught</h2>
+</div>
+<div style="display:flex;gap:48px;align-items:flex-start">
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="background:#FFFFFF;border-radius:20px;padding:16px;box-shadow:0 0 60px rgba(8,119,168,0.18)"><img src="assets/ts_acf.jpg" alt="Residual ACF decaying slowly and PACF with one strong first lag" style="width:1008px;height:372px;object-fit:contain"></div>
+<p style="font-size:24px;color:#4A5872;width:1040px">ACF decays slowly, PACF cuts off after lag 1: the signature of an AR(1) process</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:4px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">Breusch–Godfrey</p><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;color:#D9641C">p ≈ 0</p></div>
+<div style="display:flex;flex-direction:column;gap:4px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">Ljung–Box</p><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;color:#D9641C">p ≈ 0</p></div>
+<div style="display:flex;flex-direction:column;gap:4px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">ADF · AR(1) φ = 0.5 vs random walk</p><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;color:#6C5CE7">0.010 vs 0.073</p></div>
+</div>
+</div>
+<p style="font-size:28px;line-height:1.4;color:#33415C">Both tests reject “no serial correlation”. ADF rejects the unit root for the stationary series but not for the random walk.</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">09 / 20</p>
+
+</section>
+<section id="res-logit" style="background:radial-gradient(ellipse at 90% 0%, #DCEAFB 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px;justify-content:space-between">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(0deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;text-transform:uppercase;color:#0877A8">04 / Results · Logistic (n = 500)</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#0F1B33">The plot shows what the test misses</h2>
+</div>
+<div style="display:flex;gap:48px;align-items:flex-start">
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="background:#FFFFFF;border-radius:20px;padding:16px;box-shadow:0 0 60px rgba(8,119,168,0.18)"><img src="assets/logit_binned.jpg" alt="Binned residuals: random in the baseline, curved when the quadratic term is omitted" style="width:1008px;height:371px;object-fit:contain"></div>
+<p style="font-size:24px;color:#4A5872;width:1040px">Binned residuals: random (baseline, left) vs curved (omitted X₁², right)</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;flex-direction:column;gap:4px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">Hosmer–Lemeshow p</p><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;color:#D9641C">0.90 → 0.18</p><p style="font-size:24px;color:#4A5872">falls, but not significant at 5%</p></div>
+<div style="display:flex;flex-direction:column;gap:4px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">Baseline AUC</p><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;color:#0877A8">0.894</p></div>
+<div style="display:flex;flex-direction:column;gap:4px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">Collinear · max VIF</p><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;color:#6C5CE7">18.60</p></div>
+</div>
+</div>
+<p style="font-size:28px;line-height:1.4;color:#33415C">This is why diag_lm reports every test together with its diagnostic plot.</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">10 / 20</p>
+
+</section>
+<section id="res-panel" style="background:radial-gradient(ellipse at 90% 0%, #DCEAFB 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px;justify-content:space-between">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(0deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;text-transform:uppercase;color:#0877A8">04 / Results · Panel (30 entities × 8 periods)</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#0F1B33">Hausman picks the right estimator</h2>
+</div>
+<div style="display:flex;gap:32px">
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(8,119,168,0.3);border-radius:28px;padding:40px;box-shadow:0 0 60px rgba(8,119,168,0.12);display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;text-transform:uppercase;color:#5E6B85">Effects correlated with X</p>
+<p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:200px;font-weight:700;line-height:1;letter-spacing:-4px;background:linear-gradient(90deg, #0877A8 0%, #6C5CE7 100%);background-clip:text;-webkit-text-fill-color:transparent">FE</p>
+<p style="font-size:30px;color:#0F1B33"><b>Hausman p = 0.0001</b> → fixed effects</p>
+<p style="font-size:26px;color:#4A5872">Panel LM p &lt; 0.001 → panel model, not pooled OLS</p>
+</div>
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(108,92,231,0.35);border-radius:28px;padding:40px;box-shadow:0 0 60px rgba(108,92,231,0.12);display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;text-transform:uppercase;color:#5E6B85">Effects independent of X</p>
+<p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:200px;font-weight:700;line-height:1;letter-spacing:-4px;background:linear-gradient(90deg, #6C5CE7 0%, #0877A8 100%);background-clip:text;-webkit-text-fill-color:transparent">RE</p>
+<p style="font-size:30px;color:#0F1B33"><b>Hausman p = 0.138</b> → random effects</p>
+<p style="font-size:26px;color:#4A5872">Panel LM p &lt; 0.001 → panel model, not pooled OLS</p>
+</div>
+</div>
+<p style="font-size:28px;line-height:1.4;color:#33415C">Correct choice in both scenarios. In the app these show as blue model-selection boxes, not PASS / CHECK.</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">11 / 20</p>
+
+</section>
+<section id="app" style="background:radial-gradient(ellipse at 90% 0%, #DCEAFB 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(0deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;text-transform:uppercase;color:#0877A8">05 / Application</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#0F1B33">The Shiny app</h2>
+</div>
+<div style="display:flex;gap:48px;align-items:flex-start">
+<div style="background:#FFFFFF;border-radius:20px;padding:16px;box-shadow:0 0 60px rgba(8,119,168,0.2)"><img src="assets/app_setup.jpg" alt="Setup tab of the diag_lm Shiny app with data preview" style="width:1000px;height:554px;object-fit:contain"></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:32px">
+<div style="display:flex;flex-direction:column;gap:8px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:26px;font-weight:600;color:#0877A8">1 · Setup</p><p style="font-size:26px;line-height:1.4;color:#4A5872">Example data, simulated data or your own CSV</p></div>
+<div style="display:flex;flex-direction:column;gap:8px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:26px;font-weight:600;color:#0877A8">2 · Diagnostics</p><p style="font-size:26px;line-height:1.4;color:#4A5872">Fit the model, see PASS / CHECK boxes and plots</p></div>
+<div style="display:flex;flex-direction:column;gap:8px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:26px;font-weight:600;color:#6C5CE7">3 · Transformation</p><p style="font-size:26px;line-height:1.4;color:#4A5872">Log, square or standardise a variable and refit</p></div>
+</div>
+</div>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">12 / 20</p>
+
+</section>
+<section id="demo" style="background:linear-gradient(125deg, #3EE6FF 0%, #7FB8FF 45%, #9C8CFF 100%);color:#070B16;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;justify-content:center;gap:32px">
+<iframe class="embed" style="position:absolute;left:1000px;top:230px;width:792px;height:600px;border:0" sandbox="allow-scripts" title="animation" data-src="&lt;!doctype html&gt;&lt;html&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;style&gt;
+body{margin:0;background:transparent;font-family:Consolas,&#x27;Courier New&#x27;,monospace}
+.w{position:absolute;left:0;top:0;right:0;bottom:0;background:#0A1022;border-radius:24px;overflow:hidden;border:1px solid rgba(255,255,255,.18);box-shadow:0 30px 80px rgba(7,11,22,.45)}
+.b{height:56px;background:#121B36;display:flex;align-items:center;gap:12px;padding:0 24px}
+.d{width:16px;height:16px;border-radius:50%}
+.t{color:#8C9CB8;font-size:24px;margin-left:12px}
+pre{margin:0;padding:26px 30px;color:#EAF1FB;font-size:25px;line-height:1.55;white-space:pre-wrap;font-family:inherit}
+.p{color:#3EE6FF}.ck{color:#FF9F5A;font-weight:bold}.ok{color:#5CF2B0;font-weight:bold}.cm{color:#7A8BA8}.o{color:#EAF1FB}
+.cur{display:inline-block;width:13px;height:26px;background:#3EE6FF;vertical-align:-4px;animation:bl 1s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;div class=&quot;w&quot;&gt;&lt;div class=&quot;b&quot;&gt;&lt;div class=&quot;d&quot; style=&quot;background:#FF5F57&quot;&gt;&lt;/div&gt;&lt;div class=&quot;d&quot; style=&quot;background:#FEBC2E&quot;&gt;&lt;/div&gt;&lt;div class=&quot;d&quot; style=&quot;background:#28C840&quot;&gt;&lt;/div&gt;&lt;div class=&quot;t&quot;&gt;R console · diag_lm&lt;/div&gt;&lt;/div&gt;&lt;pre id=&quot;o&quot;&gt;&lt;/pre&gt;&lt;/div&gt;&lt;script&gt;
+const L=[[&#x27;p&#x27;,&#x27;&gt; set.seed(102)&#x27;],[&#x27;p&#x27;,&#x27;&gt; sim &lt;- simulate_ols_data(n = 400, heteroskedastic = TRUE)&#x27;],[&#x27;p&#x27;,&#x27;&gt; d &lt;- new_diag_lm(lm(Y ~ X1 + X2, data = sim), &quot;cs&quot;)&#x27;],[&#x27;p&#x27;,&#x27;&gt; d$diagnostics$bp_pvalue &lt; 0.05&#x27;],[&#x27;o&#x27;,&#x27;[1] TRUE    &#x27;,&#x27;ck&#x27;,&#x27;# CHECK: heteroskedasticity&#x27;],[&#x27;p&#x27;,&#x27;&gt; round(d$diagnostics$shapiro_pvalue, 3)&#x27;],[&#x27;o&#x27;,&#x27;[1] 0.003   &#x27;,&#x27;ck&#x27;,&#x27;# CHECK: normality&#x27;],[&#x27;cm&#x27;,&#x27;# now the same in the app:&#x27;],[&#x27;p&#x27;,&#x27;&gt; shiny::runApp()&#x27;]];
+const o=document.getElementById(&#x27;o&#x27;);let li=0,ci=0;
+function esc(s){return s.replace(/&amp;/g,&#x27;&amp;amp;&#x27;).replace(/&lt;/g,&#x27;&amp;lt;&#x27;).replace(/&gt;/g,&#x27;&amp;gt;&#x27;);}
+function seg(l){return l.length===2?[[l[0],l[1]]]:[[l[0],l[1]],[l[2],l[3]]];}
+function render(){let h=&#x27;&#x27;;for(let i=0;i&lt;li;i++){h+=seg(L[i]).map(s=&gt;&#x27;&lt;span class=&quot;&#x27;+s[0]+&#x27;&quot;&gt;&#x27;+esc(s[1])+&#x27;&lt;/span&gt;&#x27;).join(&#x27;&#x27;)+&#x27;\n&#x27;;}
+if(li&lt;L.length){let n=ci;for(const s of seg(L[li])){h+=&#x27;&lt;span class=&quot;&#x27;+s[0]+&#x27;&quot;&gt;&#x27;+esc(s[1].slice(0,Math.max(0,n)))+&#x27;&lt;/span&gt;&#x27;;n-=s[1].length;}}
+o.innerHTML=h+&#x27;&lt;span class=&quot;cur&quot;&gt;&lt;/span&gt;&#x27;;}
+function tick(){if(li&gt;=L.length){render();setTimeout(()=&gt;{li=0;ci=0;tick();},4500);return;}
+const tot=seg(L[li]).reduce((a,s)=&gt;a+s[1].length,0);const out=L[li][0]!==&#x27;p&#x27;;
+ci=out?tot:ci+1;render();
+if(ci&gt;=tot){li++;ci=0;setTimeout(tick,out?380:550);}else setTimeout(tick,34);}
+tick();
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;"></iframe>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:26px;letter-spacing:6px;text-transform:uppercase;color:#0B1530;width:800px">05 / Live demonstration</p>
+<h1 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:150px;font-weight:700;line-height:1;letter-spacing:-5px;color:#070B16;width:820px">Live demo</h1>
+<div style="display:flex;flex-direction:column;gap:14px;width:800px">
+<p style="font-size:32px;color:#0B1530"><b>1</b> · Inject heteroskedasticity</p>
+<p style="font-size:32px;color:#0B1530"><b>2</b> · Logistic model</p>
+<p style="font-size:32px;color:#0B1530"><b>3</b> · Panel: fixed vs random effects</p>
+<p style="font-size:32px;color:#0B1530"><b>4</b> · AI interpretation</p>
+</div>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#0B1530">13 / 20</p>
+
+</section>
+<section id="ai" style="background:radial-gradient(ellipse at 90% 0%, #E6E1FB 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px;justify-content:space-between">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(108,92,231,0.05) 0px, rgba(108,92,231,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(0deg, rgba(108,92,231,0.05) 0px, rgba(108,92,231,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;text-transform:uppercase;color:#6C5CE7">05 / AI layer</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#0F1B33">AI interpretation (optional)</h2>
+</div>
+<div style="align-self:center;background:#FFFFFF;border-radius:20px;padding:16px;box-shadow:0 0 70px rgba(108,92,231,0.3)"><img src="assets/ai_panel.jpg" alt="AI interpretation panel in the app with summary and diagnostic findings" style="width:1200px;height:318px;object-fit:contain"></div>
+<div style="display:flex;gap:24px">
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(8,119,168,0.22);border-radius:24px;padding:32px;display:flex;flex-direction:column;gap:12px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;font-weight:600;color:#0877A8">01 · Compute</p><p style="font-size:26px;line-height:1.4;color:#4A5872">diag_lm runs every test in R</p></div>
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(8,119,168,0.22);border-radius:24px;padding:32px;display:flex;flex-direction:column;gap:12px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;font-weight:600;color:#0877A8">02 · Summarise</p><p style="font-size:26px;line-height:1.4;color:#4A5872">Only test results and coefficients, no raw data</p></div>
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(108,92,231,0.35);border-radius:24px;padding:32px;display:flex;flex-direction:column;gap:12px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;font-weight:600;color:#6C5CE7">03 · Interpret</p><p style="font-size:26px;line-height:1.4;color:#4A5872">Groq LLM via ellmer explains and suggests next steps</p></div>
+</div>
+<p style="font-size:26px;color:#5E6B85">Opt-in · the AI computes no test · the app works without an API key</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">14 / 20</p>
+
+</section>
+<section id="case" style="background:radial-gradient(ellipse at 90% 0%, #DCEAFB 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px;justify-content:space-between">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(0deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:3px;text-transform:uppercase;color:#0877A8">06 / log(wage) ~ experience + age + female · N = 8,328</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#0F1B33">Case study: hourly wages</h2>
+</div>
+<div style="display:flex;gap:24px">
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(8,119,168,0.22);border-radius:24px;padding:28px 32px;display:flex;flex-direction:column;gap:8px"><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:60px;font-weight:600;line-height:1.1;color:#0877A8">+0.95%</p><p style="font-size:26px;color:#4A5872">per year of experience</p></div>
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(8,119,168,0.22);border-radius:24px;padding:28px 32px;display:flex;flex-direction:column;gap:8px"><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:60px;font-weight:600;line-height:1.1;color:#0877A8">+1.09%</p><p style="font-size:26px;color:#4A5872">per year of age</p></div>
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(108,92,231,0.35);border-radius:24px;padding:28px 32px;display:flex;flex-direction:column;gap:8px"><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:60px;font-weight:600;line-height:1.1;color:#6C5CE7">−14.05%</p><p style="font-size:26px;color:#4A5872">gap for women</p></div>
+</div>
+<div style="display:flex;gap:40px;align-items:flex-start">
+<div style="background:#FFFFFF;border-radius:20px;padding:16px;box-shadow:0 0 60px rgba(8,119,168,0.18)"><img src="assets/wage_plots.jpg" alt="Wage regression residuals vs fitted and normal Q-Q plot with heavy tails" style="width:900px;height:329px;object-fit:contain"></div>
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(8,119,168,0.22);border-radius:24px;padding:32px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;gap:18px;align-items:center"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;font-weight:600;color:#0F1B33;background:#F0A060;border-radius:10px;padding:4px 14px">CHECK</p><p style="font-size:26px;color:#0F1B33">Breusch–Pagan</p></div>
+<div style="display:flex;gap:18px;align-items:center"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;font-weight:600;color:#0F1B33;background:#F0A060;border-radius:10px;padding:4px 14px">CHECK</p><p style="font-size:26px;color:#0F1B33">Jarque–Bera (n &gt; 5000)</p></div>
+<div style="display:flex;gap:18px;align-items:center"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;font-weight:600;color:#FFFFFF;background:#0877A8;border-radius:10px;padding:4px 14px">PASS</p><p style="font-size:26px;color:#0F1B33">Durbin–Watson</p></div>
+<div style="display:flex;gap:18px;align-items:center"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;font-weight:600;color:#FFFFFF;background:#0877A8;border-radius:10px;padding:4px 14px">PASS</p><p style="font-size:26px;color:#0F1B33">VIF = 4.13</p></div>
+</div>
+</div>
+<p style="font-size:28px;color:#33415C">Expected signs, but heteroskedasticity and non-normal residuals remain.</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">15 / 20</p>
+
+</section>
+<section id="refine" style="background:radial-gradient(ellipse at 90% 0%, #DCEAFB 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px;justify-content:space-between">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(0deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;text-transform:uppercase;color:#0877A8">06 / Model refinement</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#0F1B33">Case study: improving the model</h2>
+</div>
+<div style="display:flex;gap:64px;align-items:flex-start">
+<div style="flex:1;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;gap:24px;align-items:center"><div style="width:72px;height:72px;border-radius:50%;border:2px solid #0877A8;box-shadow:0 0 24px rgba(8,119,168,0.35);display:flex;align-items:center;justify-content:center"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:30px;font-weight:600;color:#0877A8">1</p></div><div style="display:flex;flex-direction:column;gap:4px"><h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:32px;font-weight:600;color:#0F1B33">Initial model</h3><p style="font-size:26px;color:#4A5872">log(wage) on experience, age and female</p></div></div>
+<div style="display:flex;gap:24px;align-items:center"><div style="width:72px;height:72px;border-radius:50%;border:2px solid #D9641C;box-shadow:0 0 24px rgba(224,122,46,0.35);display:flex;align-items:center;justify-content:center"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:30px;font-weight:600;color:#D9641C">2</p></div><div style="display:flex;flex-direction:column;gap:4px"><h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:32px;font-weight:600;color:#0F1B33">Diagnose</h3><p style="font-size:26px;color:#4A5872">Breusch–Pagan and Jarque–Bera both CHECK</p></div></div>
+<div style="display:flex;gap:24px;align-items:center"><div style="width:72px;height:72px;border-radius:50%;border:2px solid #0877A8;box-shadow:0 0 24px rgba(8,119,168,0.35);display:flex;align-items:center;justify-content:center"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:30px;font-weight:600;color:#0877A8">3</p></div><div style="display:flex;flex-direction:column;gap:4px"><h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:32px;font-weight:600;color:#0F1B33">Try a fix</h3><p style="font-size:26px;color:#4A5872">Log of experience and age: still CHECK</p></div></div>
+<div style="display:flex;gap:24px;align-items:center"><div style="width:72px;height:72px;border-radius:50%;border:2px solid #6C5CE7;box-shadow:0 0 24px rgba(108,92,231,0.35);display:flex;align-items:center;justify-content:center"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:30px;font-weight:600;color:#6C5CE7">4</p></div><div style="display:flex;flex-direction:column;gap:4px"><h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:32px;font-weight:600;color:#0F1B33">Re-specify</h3><p style="font-size:26px;color:#4A5872">Add experience² and report robust SEs</p></div></div>
+</div>
+<div style="width:640px;display:flex;flex-direction:column;gap:24px">
+<div style="display:flex;gap:24px">
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(8,119,168,0.22);border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:8px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">experience</p><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:56px;font-weight:600;line-height:1.1;color:#0877A8">+0.0530</p></div>
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(108,92,231,0.35);border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:8px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">experience²</p><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:56px;font-weight:600;line-height:1.1;color:#6C5CE7">−0.0010</p></div>
+</div>
+<p style="font-size:28px;line-height:1.45;color:#33415C">Wages rise with experience, but more slowly over time: a <span style="color:#0877A8"><b>concave earnings profile</b></span>, as human capital theory predicts.</p>
+</div>
+</div>
+<p style="font-size:28px;color:#33415C;background:rgba(224,122,46,0.08);border:1px solid rgba(224,122,46,0.4);border-radius:20px;padding:20px 32px">BP and JB still CHECK after re-specification → report robust standard errors.</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">16 / 20</p>
+
+</section>
+<section id="testing" style="background:radial-gradient(ellipse at 90% 0%, #DCEAFB 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px;justify-content:space-between">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(0deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;text-transform:uppercase;color:#0877A8">07 / Quality</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#0F1B33">Testing and quality assurance</h2>
+</div>
+<div style="display:flex;gap:32px">
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(8,119,168,0.22);border-radius:28px;padding:40px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:150px;font-weight:700;line-height:1;letter-spacing:-4px;background:linear-gradient(90deg, #0F1B33 0%, #0877A8 100%);background-clip:text;-webkit-text-fill-color:transparent">3</p>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:36px;font-weight:600;color:#0F1B33">test scripts</h3>
+<p style="font-size:26px;line-height:1.4;color:#4A5872">One each for diag_lm, the LLM layer and the Shiny app</p>
+</div>
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(8,119,168,0.22);border-radius:28px;padding:40px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:150px;font-weight:700;line-height:1;letter-spacing:-4px;background:linear-gradient(90deg, #0877A8 0%, #6C5CE7 100%);background-clip:text;-webkit-text-fill-color:transparent">9</p>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:36px;font-weight:600;color:#0F1B33">app tests</h3>
+<p style="font-size:26px;line-height:1.4;color:#4A5872">shiny::testServer() simulates a user clicking through the app</p>
+</div>
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(108,92,231,0.35);border-radius:28px;padding:40px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:150px;font-weight:700;line-height:1;letter-spacing:-4px;background:linear-gradient(90deg, #6C5CE7 0%, #0F1B33 100%);background-clip:text;-webkit-text-fill-color:transparent">8</p>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:36px;font-weight:600;color:#0F1B33">bugs found and fixed</h3>
+<p style="font-size:26px;line-height:1.4;color:#4A5872">Found in a QA audit, e.g. a crash when switching model family</p>
+</div>
+</div>
+<p style="font-size:28px;color:#33415C">Tests run every time the report is knitted. If one fails, the build stops.</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">17 / 20</p>
+
+</section>
+<section id="limits" style="background:radial-gradient(ellipse at 90% 0%, #DCEAFB 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(0deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;text-transform:uppercase;color:#0877A8">08 / Discussion</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#0F1B33">Limitations and future work</h2>
+</div>
+<div style="display:flex;gap:32px;align-items:stretch">
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(224,122,46,0.35);border-radius:28px;padding:40px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;gap:16px;align-items:center"><span class="icon" style="color:#D9641C;width:44px;height:44px;display:inline-block;flex:none" aria-hidden="true"><svg stroke="currentColor" fill="none" stroke-width="1.75" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg></span><h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:36px;font-weight:600;color:#0F1B33">Limitations</h3></div>
+<p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">Asymptotic tests</span></b> · size may drift in small samples</p>
+<p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">Residual ADF</span></b> · indicative only (Engle–Granger)</p>
+<p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">Logistic</span></b> · cross-section only</p>
+<p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">Panel</span></b> · model selection only, no panel plots yet</p>
+<p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">Panel SEs</span></b> · HC1 unless a cluster variable is chosen</p>
+<p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">Time series</span></b> · no ARIMA / GARCH fitting</p>
+<p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">Scripts</span></b> · not yet an R package</p>
+</div>
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(8,119,168,0.3);border-radius:28px;padding:40px;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;gap:16px;align-items:center"><span class="icon" style="color:#0877A8;width:44px;height:44px;display:inline-block;flex:none" aria-hidden="true"><svg stroke="currentColor" fill="none" stroke-width="1.75" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"></path><path d="m21.854 2.147-10.94 10.939"></path></svg></span><h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:36px;font-weight:600;color:#0F1B33">Future work</h3></div>
+<p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">R package</span></b> · roxygen2, R CMD check, vignette</p>
+<p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">Auto-remediation</span></b> · refit with robust / HAC SEs or a Firth logit when a test fails</p>
+<p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">Separation check</span></b> · formal Albert–Anderson test instead of a heuristic</p>
+<p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">Extensions</span></b> · panel plots, multinomial logit, ARIMA / GARCH, IV / 2SLS</p>
+</div>
+</div>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">18 / 20</p>
+
+</section>
+<section id="achieved" style="background:radial-gradient(ellipse at 50% 0%, #D6E7FA 0%, #F7F9FC 66%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:48px;justify-content:space-between">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(0deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;text-transform:uppercase;color:#0877A8">08 / Conclusion</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#0F1B33">What we achieved</h2>
+</div>
+<div style="display:flex;gap:32px">
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(8,119,168,0.3);border-radius:28px;padding:40px;box-shadow:0 0 60px rgba(8,119,168,0.12);display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:200px;font-weight:700;line-height:1;letter-spacing:-4px;background:linear-gradient(90deg, #0F1B33 0%, #0877A8 100%);background-clip:text;-webkit-text-fill-color:transparent">4</p>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:36px;font-weight:600;color:#0F1B33">model families</h3>
+<p style="font-size:26px;line-height:1.4;color:#4A5872">Linear, logistic, time series and panel, all through one S3 class</p>
+</div>
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(8,119,168,0.3);border-radius:28px;padding:40px;box-shadow:0 0 60px rgba(8,119,168,0.12);display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:200px;font-weight:700;line-height:1;letter-spacing:-4px;background:linear-gradient(90deg, #0877A8 0%, #6C5CE7 100%);background-clip:text;-webkit-text-fill-color:transparent">6</p>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:36px;font-weight:600;color:#0F1B33">simulated problems</h3>
+<p style="font-size:26px;line-height:1.4;color:#4A5872">5 flagged by a formal test; the logistic non-linearity shows in the plot</p>
+</div>
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(108,92,231,0.35);border-radius:28px;padding:40px;box-shadow:0 0 60px rgba(108,92,231,0.14);display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:200px;font-weight:700;line-height:1;letter-spacing:-4px;background:linear-gradient(90deg, #6C5CE7 0%, #0F1B33 100%);background-clip:text;-webkit-text-fill-color:transparent">9</p>
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:36px;font-weight:600;color:#0F1B33">app tests</h3>
+<p style="font-size:26px;line-height:1.4;color:#4A5872">Plus unit tests on every report build; 8 bugs found and fixed</p>
+</div>
+</div>
+<p style="font-size:30px;color:#33415C"><span style="color:#0877A8"><b>Next step:</b></span> turn diag_lm into a proper R package (roxygen2, R CMD check, vignette).</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">19 / 20</p>
+
+</section>
+<section id="thanks" style="background:radial-gradient(ellipse at 50% 50%, #D6E7FA 0%, #F7F9FC 66%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px">
+<iframe class="embed" style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;border:0" sandbox="allow-scripts" title="animation" data-src="&lt;!doctype html&gt;&lt;html&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;/head&gt;&lt;body style=&quot;margin:0;background:transparent;overflow:hidden&quot;&gt;&lt;canvas id=&quot;c&quot; width=&quot;1920&quot; height=&quot;1080&quot; style=&quot;width:100vw;height:100vh;display:block&quot;&gt;&lt;/canvas&gt;&lt;script&gt;
+const c=document.getElementById(&#x27;c&#x27;),x=c.getContext(&#x27;2d&#x27;),W=1920,H=1080;
+const N=[];for(let i=0;i&lt;90;i++)N.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.6,vy:(Math.random()-.5)*.6,h:Math.random()&lt;.7});
+function f(){x.clearRect(0,0,W,H);
+for(const n of N){n.x+=n.vx;n.y+=n.vy;if(n.x&lt;0||n.x&gt;W)n.vx*=-1;if(n.y&lt;0||n.y&gt;H)n.vy*=-1;}
+for(let i=0;i&lt;N.length;i++)for(let j=i+1;j&lt;N.length;j++){const a=N[i],b=N[j],d=Math.hypot(a.x-b.x,a.y-b.y);if(d&lt;170){x.strokeStyle=&#x27;rgba(8,119,168,&#x27;+(0.16*(1-d/170))+&#x27;)&#x27;;x.lineWidth=1;x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke();}}
+for(const n of N){x.save();x.fillStyle=n.h?&#x27;#0877A8&#x27;:&#x27;#6C5CE7&#x27;;x.shadowColor=x.fillStyle;x.shadowBlur=12;x.beginPath();x.arc(n.x,n.y,2.6,0,6.283);x.fill();x.restore();}
+requestAnimationFrame(f);}
+f();
+&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;"></iframe>
+<h1 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:180px;font-weight:700;line-height:1;letter-spacing:-6px;text-align:center;background:linear-gradient(90deg, #0F1B33 0%, #0877A8 55%, #6C5CE7 100%);background-clip:text;-webkit-text-fill-color:transparent">Thank you</h1>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:56px;font-weight:500;color:#0F1B33;text-align:center">Questions and discussion</h2>
+<p style="font-size:30px;color:#33415C;text-align:center">Rezaul Hoque · Sarah Al-Talal · Thi Hong Cam Nguyen</p>
+<div style="background:#FFFFFF;border-radius:20px;padding:12px 18px;box-shadow:0 0 40px rgba(8,119,168,0.25)"><img src="assets/ude_logo.png" alt="University of Duisburg-Essen logo" style="width:240px;height:92px;object-fit:contain"></div>
+
+</section>
+</div>
+<div id="hint">← → or click to navigate · F for full screen</div>
+<div id="nav"><button id="prev" aria-label="Previous slide">‹</button><button id="next" aria-label="Next slide">›</button></div>
+<script>
+const slides=[...document.querySelectorAll('#stage>section')];
+let cur=0;
+function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);document.getElementById('stage').style.transform='translate(-50%,-50%) scale('+s+')';}
+function show(n){
+  n=Math.max(0,Math.min(slides.length-1,n));
+  slides[cur].classList.remove('active');
+  slides[cur].querySelectorAll('iframe.embed').forEach(f=>f.removeAttribute('srcdoc'));
+  cur=n;
+  slides[cur].classList.add('active');
+  slides[cur].querySelectorAll('iframe.embed').forEach(f=>f.srcdoc=f.dataset.src);
+  history.replaceState(null,'','#'+(cur+1));
+}
+addEventListener('resize',fit);fit();
+addEventListener('keydown',e=>{
+  if(['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(e.key)){e.preventDefault();show(cur+1);}
+  else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)){e.preventDefault();show(cur-1);}
+  else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+  else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}
+});
+document.getElementById('stage').addEventListener('click',e=>{show(e.clientX<innerWidth*0.3?cur-1:cur+1);});
+document.getElementById('prev').onclick=()=>show(cur-1);
+document.getElementById('next').onclick=()=>show(cur+1);
+let tx=null;addEventListener('touchstart',e=>{tx=e.touches[0].clientX;},{passive:true});
+addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50)show(dx<0?cur+1:cur-1);tx=null;});
+const start=parseInt(location.hash.slice(1),10);
+slides[0].classList.add('active');show(isNaN(start)?0:start-1);
+setTimeout(()=>{document.getElementById('hint').style.opacity=0;},4000);
+</script>
+</body>
+</html>
