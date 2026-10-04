@@ -16,7 +16,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#DDE5EF}
 #stage>section{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility 0s linear .45s}
 #stage>section.active{opacity:1;visibility:visible;transition:opacity .45s ease}
 h1,h2,h3,p{font-weight:inherit}h1,h2,h3{font-weight:600}
-.icon svg{width:100%;height:100%;display:block}
+table{border-collapse:collapse;overflow:hidden}th,td{padding:.35em .6em;text-align:left;border-bottom:1px solid #E3E9F2}.icon svg{width:100%;height:100%;display:block}
 #hint{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);font:14px/1.4 'IBM Plex Sans',Arial,sans-serif;color:#33415C;background:rgba(255,255,255,.85);padding:8px 16px;border-radius:999px;box-shadow:0 4px 16px rgba(15,27,51,.12);transition:opacity .6s;pointer-events:none}
 #nav{position:fixed;right:18px;bottom:18px;display:flex;gap:8px}
 #nav button{font:600 18px/1 Arial,sans-serif;width:40px;height:40px;border-radius:50%;border:1px solid #C7D3E3;background:rgba(255,255,255,.9);color:#0F1B33;cursor:pointer}
@@ -577,6 +577,135 @@ f();
 <h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:56px;font-weight:500;color:#0F1B33;text-align:center">Questions and discussion</h2>
 <p style="font-size:30px;color:#33415C;text-align:center">Rezaul Hoque · Sarah Al-Talal · Thi Hong Cam Nguyen</p>
 <div style="background:#FFFFFF;border-radius:20px;padding:12px 18px;box-shadow:0 0 40px rgba(8,119,168,0.25)"><img src="assets/ude_logo.png" alt="University of Duisburg-Essen logo" style="width:240px;height:92px;object-fit:contain"></div>
+
+</section>
+<section id="backup-demo-1" style="background:radial-gradient(ellipse at 90% 0%, #E9EEF5 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.04) 0px, rgba(8,119,168,0.04) 1px, transparent 1px, transparent 96px)"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;text-transform:uppercase;color:#5E6B85">Backup · Demo fallback 1 / 2</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#0F1B33">The app: linear and logistic models</h2>
+</div>
+<div style="display:flex;gap:32px;align-items:flex-start">
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<div style="background:#FFFFFF;border-radius:20px;padding:12px;box-shadow:0 12px 40px rgba(15,27,51,0.10)"><img src="assets/app_linear.jpg" alt="Diagnostics tab for the wage model with PASS and CHECK value boxes" style="width:792px;height:438px;object-fit:contain"></div>
+<p style="font-size:26px;line-height:1.4;color:#4A5872">Wage data: one value box per test. Green PASS, red CHECK, plus an overall status.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<div style="background:#FFFFFF;border-radius:20px;padding:12px;box-shadow:0 12px 40px rgba(15,27,51,0.10)"><img src="assets/app_logistic.jpg" alt="Logistic model plots: binned residuals, ROC curve, calibration plot and Q-Q plot" style="width:792px;height:443px;object-fit:contain"></div>
+<p style="font-size:26px;line-height:1.4;color:#4A5872">Logistic model: binned residuals, ROC curve and calibration plot replace the OLS plots.</p>
+</div>
+</div>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">B1 / B6</p>
+
+</section>
+<section id="backup-demo-2" style="background:radial-gradient(ellipse at 90% 0%, #E9EEF5 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.04) 0px, rgba(8,119,168,0.04) 1px, transparent 1px, transparent 96px)"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;text-transform:uppercase;color:#5E6B85">Backup · Demo fallback 2 / 2</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#0F1B33">The app: panel model and AI interpretation</h2>
+</div>
+<div style="display:flex;gap:32px;align-items:flex-start">
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="background:#FFFFFF;border-radius:20px;padding:12px;box-shadow:0 12px 40px rgba(15,27,51,0.10)"><img src="assets/app_panel.jpg" alt="Panel model diagnostics with blue model-selection boxes and red assumption checks" style="width:960px;height:465px;object-fit:contain"></div>
+<p style="font-size:26px;line-height:1.4;color:#4A5872;width:984px">Rental panel, two-way FE: blue boxes recommend a model (Hausman, LM, time effects); red boxes are assumption checks.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<div style="background:#FFFFFF;border-radius:20px;padding:12px;box-shadow:0 12px 40px rgba(15,27,51,0.10)"><img src="assets/ai_panel.jpg" alt="AI interpretation panel with summary and findings" style="width:624px;height:166px;object-fit:contain"></div>
+<p style="font-size:26px;line-height:1.4;color:#4A5872">AI panel: a plain-language summary of the computed tests, generated only after a click.</p>
+</div>
+</div>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">B2 / B6</p>
+
+</section>
+<section id="backup-rules" style="background:radial-gradient(ellipse at 90% 0%, #E9EEF5 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.04) 0px, rgba(8,119,168,0.04) 1px, transparent 1px, transparent 96px)"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;text-transform:uppercase;color:#5E6B85">Backup · Decision rules</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#0F1B33">How each test decides</h2>
+</div>
+<table style="width:1664px;font-size:24px;color:#33415C;background:#FFFFFF;border-radius:20px;box-shadow:0 12px 40px rgba(15,27,51,0.08)">
+<tr style="background:#E9F1F8"><th style="width:24%;color:#0F1B33">Test</th><th style="width:38%;color:#0F1B33">Null hypothesis</th><th style="width:38%;color:#0F1B33">Result in diag_lm</th></tr>
+<tr><td>Breusch–Pagan</td><td>constant error variance</td><td>p &lt; 0.05 → CHECK</td></tr>
+<tr><td>Durbin–Watson</td><td>no first-order autocorrelation</td><td>p &lt; 0.05 → CHECK</td></tr>
+<tr><td>Shapiro–Wilk / JB</td><td>normal residuals (JB if n &gt; 5000)</td><td>p &lt; 0.05 → CHECK</td></tr>
+<tr><td>VIF</td><td>(no test, a score)</td><td>&lt; 5 PASS · 5–10 CAUTION · ≥ 10 CHECK</td></tr>
+<tr><td>Hosmer–Lemeshow</td><td>model fits across 10 risk groups</td><td>p &lt; 0.05 → CHECK</td></tr>
+<tr><td>AUC</td><td>(no test, a score)</td><td>≥ 0.8 good · 0.7–0.8 caution · &lt; 0.7 weak</td></tr>
+<tr><td>ADF</td><td>unit root (non-stationary)</td><td>p ≥ 0.05 → non-stationary</td></tr>
+<tr><td>Panel LM</td><td>no panel effect</td><td>p &lt; 0.05 → use a panel model</td></tr>
+<tr><td>Hausman</td><td>random effects is consistent</td><td>p &lt; 0.05 → fixed effects</td></tr>
+<tr><td>pFtest</td><td>no time effects</td><td>p &lt; 0.05 → two-way FE</td></tr>
+<tr><td>Panel BG</td><td>no serial correlation</td><td>p &lt; 0.05 → CHECK</td></tr>
+</table>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">B3 / B6</p>
+
+</section>
+<section id="backup-dw" style="background:radial-gradient(ellipse at 90% 0%, #E9EEF5 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.04) 0px, rgba(8,119,168,0.04) 1px, transparent 1px, transparent 96px)"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;text-transform:uppercase;color:#5E6B85">Backup · Q&amp;A</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#0F1B33">Why Durbin–Watson on cross-section data?</h2>
+</div>
+<div style="display:flex;gap:32px">
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(8,119,168,0.22);border-radius:24px;padding:36px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:14px">
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:34px;font-weight:600;color:#0877A8">What it tests</h3>
+<p style="font-size:28px;line-height:1.45;color:#33415C">Correlation between neighbouring residuals, so the result depends on the order of the rows.</p>
+</div>
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(224,122,46,0.35);border-radius:24px;padding:36px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:14px">
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:34px;font-weight:600;color:#D9641C">The catch</h3>
+<p style="font-size:28px;line-height:1.45;color:#33415C">In cross-section data the row order is often arbitrary. Then the DW result carries no information.</p>
+</div>
+<div style="flex:1;background:#FFFFFF;border:1px solid rgba(108,92,231,0.35);border-radius:24px;padding:36px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:14px">
+<h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:34px;font-weight:600;color:#6C5CE7">For time series</h3>
+<p style="font-size:28px;line-height:1.45;color:#33415C">diag_lm adds Breusch–Godfrey (higher-order lags) and Ljung–Box.</p>
+</div>
+</div>
+<p style="font-size:32px;line-height:1.45;color:#0F1B33;background:#FFFFFF;border:1px solid rgba(8,119,168,0.3);border-radius:20px;padding:24px 36px"><b>Short answer:</b> we report it as a standard OLS check. It is only meaningful when the rows have a natural order, for example sorted by time or region.</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">B4 / B6</p>
+
+</section>
+<section id="backup-pbg" style="background:radial-gradient(ellipse at 90% 0%, #E9EEF5 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.04) 0px, rgba(8,119,168,0.04) 1px, transparent 1px, transparent 96px)"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;text-transform:uppercase;color:#5E6B85">Backup · Q&amp;A · known limitation</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#0F1B33">Why does panel BG reject in both simulations?</h2>
+</div>
+<div style="display:flex;gap:48px;align-items:flex-start">
+<div style="flex:1;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;gap:24px;align-items:flex-start"><div style="width:64px;height:64px;border-radius:50%;border:2px solid #0877A8;display:flex;align-items:center;justify-content:center"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;font-weight:600;color:#0877A8">1</p></div><p style="flex:1;font-size:28px;line-height:1.45;color:#33415C">Report, Table 5: panel BG gives p ≤ 0.0001 in both scenarios, although we simulated <b>no</b> serial correlation.</p></div>
+<div style="display:flex;gap:24px;align-items:flex-start"><div style="width:64px;height:64px;border-radius:50%;border:2px solid #D9641C;display:flex;align-items:center;justify-content:center"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;font-weight:600;color:#D9641C">2</p></div><p style="flex:1;font-size:28px;line-height:1.45;color:#33415C">The test runs on the within (FE) residuals. Demeaning each entity creates a correlation of about −1/(T−1) between them.</p></div>
+<div style="display:flex;gap:24px;align-items:flex-start"><div style="width:64px;height:64px;border-radius:50%;border:2px solid #6C5CE7;display:flex;align-items:center;justify-content:center"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;font-weight:600;color:#6C5CE7">3</p></div><p style="flex:1;font-size:28px;line-height:1.45;color:#33415C">With 240 observations, the test picks up this built-in correlation.</p></div>
+</div>
+<div style="width:560px;display:flex;flex-direction:column;gap:24px">
+<div style="background:#FFFFFF;border:1px solid rgba(224,122,46,0.35);border-radius:24px;padding:32px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:6px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">T = 8 periods</p><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1;color:#D9641C">−1/7 ≈ −0.14</p></div>
+<div style="background:#FFFFFF;border:1px solid rgba(8,119,168,0.3);border-radius:24px;padding:32px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:8px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#0877A8">Fix</p><p style="font-size:28px;line-height:1.45;color:#33415C">Use Wooldridge's test for FE models, <span style="color:#0877A8">plm::pwartest()</span>, which allows for the demeaning.</p></div>
+</div>
+</div>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">B5 / B6</p>
+
+</section>
+<section id="backup-code" style="background:radial-gradient(ellipse at 90% 0%, #E9EEF5 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.04) 0px, rgba(8,119,168,0.04) 1px, transparent 1px, transparent 96px)"></div>
+<div style="display:flex;flex-direction:column;gap:12px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;text-transform:uppercase;color:#5E6B85">Backup · Code</p>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#0F1B33">The S3 interface in practice</h2>
+</div>
+<div style="display:flex;gap:40px;align-items:flex-start">
+<div style="width:1080px;background:#0F1B33;border-radius:24px;padding:40px 44px;box-shadow:0 20px 50px rgba(15,27,51,0.25);display:flex;flex-direction:column;gap:14px;font-family:'Courier New', monospace">
+<p style="font-size:28px;font-weight:600;color:#EAF1FB;white-space:nowrap">fit &lt;- lm(Y ~ X1 + X2, data = sim)</p>
+<p style="font-size:28px;font-weight:600;color:#EAF1FB;white-space:nowrap">d &lt;- new_diag_lm(fit, data_type = "cs")</p>
+<p style="font-size:28px;font-weight:600;color:#EAF1FB;white-space:nowrap">class(d) <span style="color:#7FA6C9"># "diag_lm"</span></p>
+<p style="font-size:28px;font-weight:600;color:#EAF1FB;white-space:nowrap">summary(d) <span style="color:#7FA6C9"># gt table, layout follows data_type</span></p>
+<p style="font-size:28px;font-weight:600;color:#EAF1FB;white-space:nowrap">plot(d, type = "qq") <span style="color:#7FA6C9"># ggplot object</span></p>
+<p style="font-size:28px;font-weight:600;color:#EAF1FB;white-space:nowrap">plot(d, type = "roc") <span style="color:#F0A060"># error: logistic-only plot</span></p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:24px">
+<div style="background:#FFFFFF;border:1px solid rgba(8,119,168,0.22);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:6px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;font-weight:600;color:#0877A8">Constructor</p><p style="font-size:26px;line-height:1.4;color:#33415C">checks the input: lm, plm or binomial glm</p></div>
+<div style="background:#FFFFFF;border:1px solid rgba(8,119,168,0.22);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:6px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;font-weight:600;color:#0877A8">Methods</p><p style="font-size:26px;line-height:1.4;color:#33415C">summary() and plot() dispatch on the class</p></div>
+<div style="background:#FFFFFF;border:1px solid rgba(108,92,231,0.3);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:6px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;font-weight:600;color:#6C5CE7">Safety</p><p style="font-size:26px;line-height:1.4;color:#33415C">tryCatch(): a failed test returns NA</p></div>
+</div>
+</div>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">B6 / B6</p>
 
 </section>
 </div>
