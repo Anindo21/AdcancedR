@@ -263,7 +263,7 @@ requestAnimationFrame(frame);
 <p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">07 / 20</p>
 
 </section>
-<section id="res-linear" style="background:radial-gradient(ellipse at 90% 0%, #DCEAFB 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px;justify-content:space-between">
+<section id="res-linear" style="background:radial-gradient(ellipse at 90% 0%, #DCEAFB 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:28px;justify-content:space-between">
 <div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
 <div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(0deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
 <div style="display:flex;flex-direction:column;gap:12px">
@@ -272,8 +272,8 @@ requestAnimationFrame(frame);
 </div>
 <div style="display:flex;gap:48px;align-items:flex-start">
 <div style="display:flex;flex-direction:column;gap:16px">
-<div style="background:#FFFFFF;border-radius:20px;padding:16px;box-shadow:0 0 60px rgba(8,119,168,0.18)"><img src="assets/linear_resid.jpg" alt="Residuals vs fitted: random scatter in the baseline, a funnel shape with injected heteroskedasticity" style="width:1008px;height:350px;object-fit:contain"></div>
-<p style="font-size:24px;color:#4A5872;width:1040px">Residuals vs fitted: random scatter (baseline, left) vs a funnel (injected, right)</p>
+<div style="background:#FFFFFF;border-radius:20px;padding:16px;box-shadow:0 0 60px rgba(8,119,168,0.18)"><img src="assets/linear_resid.jpg" alt="Residuals vs fitted: random scatter in the baseline, a funnel shape with injected heteroskedasticity" style="width:900px;height:313px;object-fit:contain"></div>
+<p style="font-size:24px;color:#4A5872;width:932px">Residuals vs fitted: random scatter (baseline, left) vs a funnel (injected, right)</p>
 </div>
 <div style="flex:1;display:flex;flex-direction:column;gap:28px">
 <div style="display:flex;flex-direction:column;gap:4px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">Baseline · Breusch–Pagan</p><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;color:#0877A8">p = 0.486</p></div>
@@ -281,11 +281,12 @@ requestAnimationFrame(frame);
 <div style="display:flex;flex-direction:column;gap:4px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">Collinear X₂ ≈ X₁ · max VIF</p><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;color:#6C5CE7">15.68</p></div>
 </div>
 </div>
-<p style="font-size:28px;line-height:1.4;color:#33415C">Note: Shapiro–Wilk also rejects under heteroskedasticity (p = 0.003), because unequal variance makes the tails heavier.</p>
+<div style="background:#0F1B33;border-radius:16px;padding:18px 28px;display:flex;gap:40px;align-items:center;font-family:'Courier New', monospace;box-shadow:0 12px 30px rgba(15,27,51,0.18)"><div style="display:flex;flex-direction:column;gap:6px"><p style="font-size:24px;font-weight:600;color:#EAF1FB;white-space:nowrap">sd_u &lt;- 1 + 1.5 * abs(X1) <span style="color:#7FA6C9"># heteroskedasticity</span></p><p style="font-size:24px;font-weight:600;color:#EAF1FB;white-space:nowrap">u &lt;- rnorm(n, 0, sd_u)</p><p style="font-size:24px;font-weight:600;color:#EAF1FB;white-space:nowrap">Y &lt;- 10 + 2.5*X1 - 1.5*X2 + u</p></div></div>
+<p style="font-size:26px;line-height:1.4;color:#33415C">Note: Shapiro–Wilk also rejects here (p = 0.003), because unequal variance makes the tails heavier.</p>
 <p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">08 / 20</p>
 
 </section>
-<section id="res-ts" style="background:radial-gradient(ellipse at 90% 0%, #DCEAFB 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px;justify-content:space-between">
+<section id="res-ts" style="background:radial-gradient(ellipse at 90% 0%, #DCEAFB 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:28px;justify-content:space-between">
 <div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
 <div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(0deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
 <div style="display:flex;flex-direction:column;gap:12px">
@@ -294,8 +295,8 @@ requestAnimationFrame(frame);
 </div>
 <div style="display:flex;gap:48px;align-items:flex-start">
 <div style="display:flex;flex-direction:column;gap:16px">
-<div style="background:#FFFFFF;border-radius:20px;padding:16px;box-shadow:0 0 60px rgba(8,119,168,0.18)"><img src="assets/ts_acf.jpg" alt="Residual ACF decaying slowly and PACF with one strong first lag" style="width:1008px;height:372px;object-fit:contain"></div>
-<p style="font-size:24px;color:#4A5872;width:1040px">ACF decays slowly, PACF cuts off after lag 1: the signature of an AR(1) process</p>
+<div style="background:#FFFFFF;border-radius:20px;padding:16px;box-shadow:0 0 60px rgba(8,119,168,0.18)"><img src="assets/ts_acf.jpg" alt="Residual ACF decaying slowly and PACF with one strong first lag" style="width:900px;height:332px;object-fit:contain"></div>
+<p style="font-size:24px;color:#4A5872;width:932px">ACF decays slowly, PACF cuts off after lag 1: the signature of an AR(1) process</p>
 </div>
 <div style="flex:1;display:flex;flex-direction:column;gap:28px">
 <div style="display:flex;flex-direction:column;gap:4px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">Breusch–Godfrey</p><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;color:#D9641C">p ≈ 0</p></div>
@@ -303,11 +304,12 @@ requestAnimationFrame(frame);
 <div style="display:flex;flex-direction:column;gap:4px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">ADF · AR(1) φ = 0.5 vs random walk</p><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;color:#6C5CE7">0.010 vs 0.073</p></div>
 </div>
 </div>
-<p style="font-size:28px;line-height:1.4;color:#33415C">Both tests reject “no serial correlation”. ADF rejects the unit root for the stationary series but not for the random walk.</p>
+<div style="background:#0F1B33;border-radius:16px;padding:18px 28px;display:flex;gap:40px;align-items:center;font-family:'Courier New', monospace;box-shadow:0 12px 30px rgba(15,27,51,0.18)"><p style="font-size:24px;font-weight:600;color:#7FA6C9;white-space:nowrap"># Serial correlation</p><div style="display:flex;flex-direction:column;gap:6px"><p style="font-size:24px;font-weight:600;color:#EAF1FB;white-space:nowrap">e[t] &lt;- 0.6*e[t-1] + eps[t]</p></div></div>
+<p style="font-size:26px;line-height:1.4;color:#33415C">Both tests reject “no serial correlation”. ADF rejects the unit root for the stationary series but not for the random walk.</p>
 <p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">09 / 20</p>
 
 </section>
-<section id="res-logit" style="background:radial-gradient(ellipse at 90% 0%, #DCEAFB 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px;justify-content:space-between">
+<section id="res-logit" style="background:radial-gradient(ellipse at 90% 0%, #DCEAFB 0%, #F7F9FC 62%);color:#0F1B33;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:24px;justify-content:space-between">
 <div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
 <div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(0deg, rgba(8,119,168,0.05) 0px, rgba(8,119,168,0.05) 1px, transparent 1px, transparent 96px)"></div>
 <div style="display:flex;flex-direction:column;gap:12px">
@@ -316,8 +318,8 @@ requestAnimationFrame(frame);
 </div>
 <div style="display:flex;gap:48px;align-items:flex-start">
 <div style="display:flex;flex-direction:column;gap:16px">
-<div style="background:#FFFFFF;border-radius:20px;padding:16px;box-shadow:0 0 60px rgba(8,119,168,0.18)"><img src="assets/logit_binned.jpg" alt="Binned residuals: random in the baseline, curved when the quadratic term is omitted" style="width:1008px;height:371px;object-fit:contain"></div>
-<p style="font-size:24px;color:#4A5872;width:1040px">Binned residuals: random (baseline, left) vs curved (omitted X₁², right)</p>
+<div style="background:#FFFFFF;border-radius:20px;padding:16px;box-shadow:0 0 60px rgba(8,119,168,0.18)"><img src="assets/logit_binned.jpg" alt="Binned residuals: random in the baseline, curved when the quadratic term is omitted" style="width:900px;height:331px;object-fit:contain"></div>
+<p style="font-size:24px;color:#4A5872;width:932px">Binned residuals: random (baseline, left) vs curved (omitted X₁², right)</p>
 </div>
 <div style="flex:1;display:flex;flex-direction:column;gap:28px">
 <div style="display:flex;flex-direction:column;gap:4px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">Hosmer–Lemeshow p</p><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;color:#D9641C">0.90 → 0.18</p><p style="font-size:24px;color:#4A5872">falls, but not significant at 5%</p></div>
@@ -325,7 +327,8 @@ requestAnimationFrame(frame);
 <div style="display:flex;flex-direction:column;gap:4px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">Collinear · max VIF</p><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;color:#6C5CE7">18.60</p></div>
 </div>
 </div>
-<p style="font-size:28px;line-height:1.4;color:#33415C">This is why diag_lm reports every test together with its diagnostic plot.</p>
+<div style="background:#0F1B33;border-radius:16px;padding:18px 28px;display:flex;gap:40px;align-items:center;font-family:'Courier New', monospace;box-shadow:0 12px 30px rgba(15,27,51,0.18)"><p style="font-size:24px;font-weight:600;color:#7FA6C9;white-space:nowrap"># Logistic misspecification</p><div style="display:flex;flex-direction:column;gap:6px"><p style="font-size:24px;font-weight:600;color:#EAF1FB;white-space:nowrap">eta &lt;- 1.4*X1 - 1.1*X2 + 0.6*X1^2</p><p style="font-size:24px;font-weight:600;color:#EAF1FB;white-space:nowrap">glm(Y ~ X1 + X2, family = binomial) <span style="color:#7FA6C9"># X1² omitted</span></p></div></div>
+<p style="font-size:26px;line-height:1.4;color:#33415C">This is why diag_lm reports every test together with its diagnostic plot.</p>
 <p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">10 / 20</p>
 
 </section>
@@ -350,6 +353,7 @@ requestAnimationFrame(frame);
 <p style="font-size:26px;color:#4A5872">Panel LM p &lt; 0.001 → panel model, not pooled OLS</p>
 </div>
 </div>
+<div style="background:#0F1B33;border-radius:16px;padding:18px 28px;display:flex;gap:40px;align-items:center;font-family:'Courier New', monospace;box-shadow:0 12px 30px rgba(15,27,51,0.18)"><p style="font-size:24px;font-weight:600;color:#7FA6C9;white-space:nowrap"># Correlated panel effects</p><div style="display:flex;flex-direction:column;gap:6px"><p style="font-size:24px;font-weight:600;color:#EAF1FB;white-space:nowrap">alpha &lt;- 0.8*X_mean + noise <span style="color:#7FA6C9"># Cov(X, α) ≠ 0</span></p></div></div>
 <p style="font-size:28px;line-height:1.4;color:#33415C">Correct choice in both scenarios. In the app these show as blue model-selection boxes, not PASS / CHECK.</p>
 <p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">11 / 20</p>
 
