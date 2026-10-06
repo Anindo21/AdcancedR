@@ -512,20 +512,19 @@ tick();
 <div style="display:flex;gap:32px;align-items:stretch">
 <div style="flex:1;background:#FFFFFF;border:1px solid rgba(224,122,46,0.35);border-radius:28px;padding:40px;display:flex;flex-direction:column;gap:14px">
 <div style="display:flex;gap:16px;align-items:center"><span class="icon" style="color:#D9641C;width:44px;height:44px;display:inline-block;flex:none" aria-hidden="true"><svg stroke="currentColor" fill="none" stroke-width="1.75" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path></svg></span><h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:36px;font-weight:600;color:#0F1B33">Limitations</h3></div>
-<p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">Asymptotic tests</span></b> · size may drift in small samples</p>
-<p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">Residual ADF</span></b> · indicative only (Engle–Granger)</p>
+<p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">Large samples</span></b> · most tests rely on large-sample results</p>
+<p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">Residual ADF</span></b> · only a rough check on regression residuals</p>
 <p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">Logistic</span></b> · cross-section only</p>
 <p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">Panel</span></b> · model selection only, no panel plots yet</p>
-<p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">Panel SEs</span></b> · HC1 unless a cluster variable is chosen</p>
+<p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">Panel SEs</span></b> · not clustered by default</p>
 <p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">Time series</span></b> · no ARIMA / GARCH fitting</p>
 <p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">Scripts</span></b> · not yet an R package</p>
 </div>
 <div style="flex:1;background:#FFFFFF;border:1px solid rgba(8,119,168,0.3);border-radius:28px;padding:40px;display:flex;flex-direction:column;gap:14px">
 <div style="display:flex;gap:16px;align-items:center"><span class="icon" style="color:#0877A8;width:44px;height:44px;display:inline-block;flex:none" aria-hidden="true"><svg stroke="currentColor" fill="none" stroke-width="1.75" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg"><path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"></path><path d="m21.854 2.147-10.94 10.939"></path></svg></span><h3 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:36px;font-weight:600;color:#0F1B33">Future work</h3></div>
 <p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">R package</span></b> · roxygen2, R CMD check, vignette</p>
-<p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">Auto-remediation</span></b> · refit with robust / HAC SEs or a Firth logit when a test fails</p>
-<p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">Separation check</span></b> · formal Albert–Anderson test instead of a heuristic</p>
-<p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">Extensions</span></b> · panel plots, multinomial logit, ARIMA / GARCH, IV / 2SLS</p>
+<p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">Automatic fixes</span></b> · apply the suggested fix, e.g. robust standard errors</p>
+<p style="font-size:26px;line-height:1.4;color:#4A5872"><b><span style="color:#0F1B33">Extensions</span></b> · panel plots, multinomial logit, ARIMA models</p>
 </div>
 </div>
 <p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">18 / 20</p>
@@ -555,7 +554,7 @@ tick();
 <p style="font-size:26px;line-height:1.4;color:#4A5872">Plus unit tests on every report build; 8 bugs found and fixed</p>
 </div>
 </div>
-<p style="font-size:30px;color:#33415C"><span style="color:#0877A8"><b>Next step:</b></span> turn diag_lm into a proper R package (roxygen2, R CMD check, vignette).</p>
+<p style="font-size:30px;color:#33415C"><span style="color:#0877A8"><b>Next step:</b></span> turn diag_lm into an R package.</p>
 <p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">19 / 20</p>
 
 </section>
@@ -665,18 +664,12 @@ f();
 <div style="position:absolute;left:0px;top:0px;width:1920px;height:1080px;background:repeating-linear-gradient(90deg, rgba(8,119,168,0.04) 0px, rgba(8,119,168,0.04) 1px, transparent 1px, transparent 96px)"></div>
 <div style="display:flex;flex-direction:column;gap:12px">
 <p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:4px;text-transform:uppercase;color:#5E6B85">Backup · Q&amp;A · known limitation</p>
-<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#0F1B33">Why does panel BG reject in both simulations?</h2>
+<h2 style="font-family:'Space Grotesk', Arial, sans-serif;font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-1px;color:#0F1B33">Why does panel BG reject in our simulations?</h2>
 </div>
-<div style="display:flex;gap:48px;align-items:flex-start">
-<div style="flex:1;display:flex;flex-direction:column;gap:28px">
-<div style="display:flex;gap:24px;align-items:flex-start"><div style="width:64px;height:64px;border-radius:50%;border:2px solid #0877A8;display:flex;align-items:center;justify-content:center"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;font-weight:600;color:#0877A8">1</p></div><p style="flex:1;font-size:28px;line-height:1.45;color:#33415C">Report, Table 5: panel BG gives p ≤ 0.0001 in both scenarios, although we simulated <b>no</b> serial correlation.</p></div>
-<div style="display:flex;gap:24px;align-items:flex-start"><div style="width:64px;height:64px;border-radius:50%;border:2px solid #D9641C;display:flex;align-items:center;justify-content:center"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;font-weight:600;color:#D9641C">2</p></div><p style="flex:1;font-size:28px;line-height:1.45;color:#33415C">The test runs on the within (FE) residuals. Demeaning each entity creates a correlation of about −1/(T−1) between them.</p></div>
-<div style="display:flex;gap:24px;align-items:flex-start"><div style="width:64px;height:64px;border-radius:50%;border:2px solid #6C5CE7;display:flex;align-items:center;justify-content:center"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;font-weight:600;color:#6C5CE7">3</p></div><p style="flex:1;font-size:28px;line-height:1.45;color:#33415C">With 240 observations, the test picks up this built-in correlation.</p></div>
-</div>
-<div style="width:560px;display:flex;flex-direction:column;gap:24px">
-<div style="background:#FFFFFF;border:1px solid rgba(224,122,46,0.35);border-radius:24px;padding:32px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:6px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">T = 8 periods</p><p style="font-family:'Space Grotesk', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1;color:#D9641C">−1/7 ≈ −0.14</p></div>
-<div style="background:#FFFFFF;border:1px solid rgba(8,119,168,0.3);border-radius:24px;padding:32px;box-shadow:0 12px 40px rgba(15,27,51,0.08);display:flex;flex-direction:column;gap:8px"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#0877A8">Fix</p><p style="font-size:28px;line-height:1.45;color:#33415C">Use Wooldridge's test for FE models, <span style="color:#0877A8">plm::pwartest()</span>, which allows for the demeaning.</p></div>
-</div>
+<div style="display:flex;flex-direction:column;gap:32px;width:1400px">
+<div style="display:flex;gap:24px;align-items:flex-start"><div style="width:64px;height:64px;border-radius:50%;border:2px solid #0877A8;display:flex;align-items:center;justify-content:center"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;font-weight:600;color:#0877A8">1</p></div><p style="flex:1;font-size:30px;line-height:1.45;color:#33415C">In our report (Table 5), panel BG gives p ≤ 0.0001 in both scenarios, although we simulated <b>no</b> serial correlation.</p></div>
+<div style="display:flex;gap:24px;align-items:flex-start"><div style="width:64px;height:64px;border-radius:50%;border:2px solid #D9641C;display:flex;align-items:center;justify-content:center"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;font-weight:600;color:#D9641C">2</p></div><p style="flex:1;font-size:30px;line-height:1.45;color:#33415C">So with our short panel (8 periods), the test seems to be too sensitive.</p></div>
+<div style="display:flex;gap:24px;align-items:flex-start"><div style="width:64px;height:64px;border-radius:50%;border:2px solid #6C5CE7;display:flex;align-items:center;justify-content:center"><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:28px;font-weight:600;color:#6C5CE7">3</p></div><p style="flex:1;font-size:30px;line-height:1.45;color:#33415C">We therefore read a panel BG CHECK as a warning, not a final verdict. Checking this test more closely is future work.</p></div>
 </div>
 <p style="position:absolute;right:128px;bottom:64px;width:200px;text-align:right;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#5E6B85">B5 / B6</p>
 
